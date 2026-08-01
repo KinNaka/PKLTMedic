@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Hệ thống quản lý phòng khám
+    </h2>
+
+    <p>
+        Xin chào, <strong>@User.Identity.Name</strong>
+    </p>
+
+
+    <div class="row g-4 mt-4">
+
+
+        <!-- Khách hàng -->
+        <div class="col-md-4">
+
+            <a asp-controller="Customers"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <div class="card shadow-sm p-4">
+
+                    <h4>
+                        👥 Khách hàng
+                    </h4>
+
+                    <p>
+                        Quản lý thông tin khách hàng,
+                        bệnh nhân
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- Hóa đơn -->
+        <div class="col-md-4">
+
+            <a asp-controller="Invoices"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <div class="card shadow-sm p-4">
+
+                    <h4>
+                        🧾 Hóa đơn
+                    </h4>
+
+                    <p>
+                        Xem và quản lý hóa đơn
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+
+        <!-- Nhập hàng -->
+        <div class="col-md-4">
+
+            <a asp-controller="Imports"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <div class="card shadow-sm p-4">
+
+                    <h4>
+                        📥 Nhập hàng
+                    </h4>
+
+                    <p>
+                        Nhập thuốc, sản phẩm
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+
+
+        <!-- Bán hàng -->
+        <div class="col-md-4">
+
+            <a asp-controller="Sales"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <div class="card shadow-sm p-4">
+
+                    <h4>
+                        🛒 Bán hàng
+                    </h4>
+
+                    <p>
+                        Tạo đơn bán hàng
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+
+
+        <!-- Kho -->
+        <div class="col-md-4">
+
+            <a asp-controller="Inventory"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <div class="card shadow-sm p-4">
+
+                    <h4>
+                        📦 Kho
+                    </h4>
+
+                    <p>
+                        Quản lý tồn kho
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>

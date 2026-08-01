@@ -1,0 +1,30 @@
+## Visual Studio
+.vs/
+bin/
+obj/
+
+## User files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## Logs
+*.log
+
+## NuGet
+packages/
+*.nupkg
+
+## Publish
+publish/
+
+## Windows
+Thumbs.db
+Desktop.ini
