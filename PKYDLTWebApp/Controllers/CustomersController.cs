@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClinicManagement.Models;
 using ClinicManagement.Data;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class CustomersController : Controller
 {
     private readonly ApplicationDbContext _context;

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using PKYDLTWebApp.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PKYDLTWebApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
