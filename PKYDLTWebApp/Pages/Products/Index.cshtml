@@ -1,0 +1,205 @@
+@page
+@model PKYDLTWebApp.Pages.Products.IndexModel
+@{
+    ViewData["Title"] = "Quản lý Sản phẩm";
+}
+
+<!-- ============================================================================
+     TRANG QUẢN LÝ DANH SÁCH SẢN PHẨM/THUỐC
+     ============================================================================ -->
+
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">📦 Quản lý Sản phẩm/Thuốc</h2>
+            <p class="text-muted">Danh sách tất cả sản phẩm trong hệ thống</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/Products/Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (!string.IsNullOrEmpty(TempData["Success"] as string))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>✓ Thành công:</strong> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(TempData["Error"] as string))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>✗ Lỗi:</strong> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search & Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <!-- Tìm kiếm -->
+                <div class="col-md-6">
+                    <label class="form-label">🔍 Tìm kiếm mã/tên</label>
+                    <input type="text" name="searchTerm" class="form-control" 
+                           placeholder="Nhập mã sản phẩm hoặc tên..." 
+                           value="@Model.SearchTerm" />
+                </div>
+
+                <!-- Lọc theo loại -->
+                <div class="col-md-4">
+                    <label class="form-label">📂 Loại sản phẩm</label>
+                    <select name="category" class="form-select">
+                        <option value="">-- Tất cả --</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat" selected="@(cat == Model.Category)">@cat</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Nút tìm kiếm -->
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-primary w-100">🔎 Tìm kiếm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Danh sách sản phẩm (Trang @Model.PageNumber/@Model.TotalPages)</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Products.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 15%">Mã SP</th>
+                                <th style="width: 25%">Tên sản phẩm</th>
+                                <th style="width: 12%">Loại</th>
+                                <th style="width: 12%">Đơn vị</th>
+                                <th style="width: 15%">Giá bán lẻ</th>
+                                <th style="width: 10%">Hạn</th>
+                                <th style="width: 11%" class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Products)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@product.ProductCode</strong>
+                                    </td>
+                                    <td>
+                                        <div>@product.ProductName</div>
+                                        <small class="text-muted">
+                                            @if (!string.IsNullOrEmpty(product.OtherName))
+                                            {
+                                                <text>(@product.OtherName)</text>
+                                            }
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@product.Category</span>
+                                    </td>
+                                    <td>@product.Unit</td>
+                                    <td>
+                                        <strong class="text-primary">@product.RetailPrice.ToString("N0")đ</strong>
+                                        <br />
+                                        <small class="text-muted">Nhập: @product.CostPrice.ToString("N0")đ</small>
+                                    </td>
+                                    <td>
+                                        @if (product.ExpiryDate.HasValue)
+                                        {
+                                            var daysLeft = (product.ExpiryDate.Value - DateTime.Now).Days;
+                                            if (daysLeft < 0)
+                                            {
+                                                <span class="badge bg-danger">HẾT HẠN</span>
+                                            }
+                                            else if (daysLeft < 30)
+                                            {
+                                                <span class="badge bg-warning">SẮP HẾT (@daysLeft ngày)</span>
+                                            }
+                                            else
+                                            {
+                                                <small>@product.ExpiryDate?.ToString("dd/MM/yyyy")</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">N/A</small>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/Products/Edit/@product.Id" class="btn btn-sm btn-outline-primary" title="Sửa">
+                                            ✎ Sửa
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="confirm('Bạn chắc chắn muốn xóa?') && fetch('/Products/Index?handler=delete&id=@product.Id', {method:'POST'}).then(()=>location.reload())"
+                                                title="Xóa">
+                                            🗑 Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="card-footer bg-light">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination mb-0">
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                if (i == Model.PageNumber)
+                                {
+                                    <li class="page-item active">
+                                        <span class="page-link">@i</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="/Products/Index?pageNumber=@i&searchTerm=@Model.SearchTerm&category=@Model.Category">@i</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">📭 Không tìm thấy sản phẩm nào</p>
+                    <a href="/Products/Create" class="btn btn-primary">Thêm sản phẩm đầu tiên</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+    }
+    .btn-sm {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
+    }
+</style>

@@ -1,0 +1,149 @@
+@page
+@model PKYDLTWebApp.Pages.Products.CreateModel
+@{
+    ViewData["Title"] = "Thêm Sản phẩm";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">➕ Thêm Sản phẩm/Thuốc mới</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <!-- Mã sản phẩm & Tên -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
+                                <input asp-for="Product.ProductCode" class="form-control" placeholder="VD: THUOC001" required />
+                                <span asp-validation-for="Product.ProductCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                                <input asp-for="Product.ProductName" class="form-control" placeholder="VD: Paracetamol 500mg" required />
+                                <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Tên khác -->
+                        <div class="mb-3">
+                            <label class="form-label">Tên khác (Tên chứng chỉ TC bệnh)</label>
+                            <input asp-for="Product.OtherName" class="form-control" placeholder="VD: Acetaminophen" />
+                        </div>
+
+                        <!-- Loại & Đơn vị & Hàm lượng -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Loại sản phẩm <span class="text-danger">*</span></label>
+                                <select asp-for="Product.Category" class="form-select" required>
+                                    <option value="">-- Chọn --</option>
+                                    <option value="Thuốc">Thuốc</option>
+                                    <option value="Nước">Nước</option>
+                                    <option value="Thiết bị y tế">Thiết bị y tế</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                                <span asp-validation-for="Product.Category" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Đơn vị tính <span class="text-danger">*</span></label>
+                                <select asp-for="Product.Unit" class="form-select" required>
+                                    <option value="">-- Chọn --</option>
+                                    <option value="Viên">Viên</option>
+                                    <option value="Lọ">Lọ</option>
+                                    <option value="Chai">Chai</option>
+                                    <option value="Tuýp">Tuýp</option>
+                                    <option value="Vỉ">Vỉ</option>
+                                    <option value="Gói">Gói</option>
+                                    <option value="Cái">Cái</option>
+                                    <option value="Hộp">Hộp</option>
+                                </select>
+                                <span asp-validation-for="Product.Unit" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Hàm lượng/Liều lượng</label>
+                                <input asp-for="Product.Strength" class="form-control" placeholder="VD: 500mg, 10mg/5ml" />
+                            </div>
+                        </div>
+
+                        <!-- Giá nhập & Giá bán lẻ & Giá bán buôn -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Giá nhập (₫) <span class="text-danger">*</span></label>
+                                <input asp-for="Product.CostPrice" type="number" step="0.01" class="form-control" placeholder="0" required />
+                                <small class="text-muted">Giá từ nhà cung cấp</small>
+                                <span asp-validation-for="Product.CostPrice" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Giá bán lẻ (₫) <span class="text-danger">*</span></label>
+                                <input asp-for="Product.RetailPrice" type="number" step="0.01" class="form-control" placeholder="0" required />
+                                <small class="text-muted">Giá bán cho khách lẻ</small>
+                                <span asp-validation-for="Product.RetailPrice" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Giá bán buôn (₫)</label>
+                                <input asp-for="Product.WholesalePrice" type="number" step="0.01" class="form-control" placeholder="0" />
+                                <small class="text-muted">Giá bán số lượng lớn (nếu có)</small>
+                            </div>
+                        </div>
+
+                        <!-- Chiết khấu & Nhà cung cấp -->
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Chiết khấu (%)</label>
+                                <input asp-for="Product.DiscountPercent" type="number" step="0.01" class="form-control" placeholder="0" />
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Nhà cung cấp</label>
+                                <select asp-for="Product.SupplierId" class="form-select">
+                                    <option value="">-- Chọn nhà cung cấp --</option>
+                                    @foreach (var supplier in Model.Suppliers)
+                                    {
+                                        <option value="@supplier.Id">@supplier.SupplierName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Số lô & Hạn sử dụng -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số lô (Batch Number)</label>
+                                <input asp-for="Product.BatchNumber" class="form-control" placeholder="VD: 20260812" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày hết hạn</label>
+                                <input asp-for="Product.ExpiryDate" type="datetime-local" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Mô tả & Ghi chú -->
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả sản phẩm</label>
+                            <textarea asp-for="Product.Description" class="form-control" rows="3" placeholder="Mô tả chi tiết sản phẩm..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea asp-for="Product.Notes" class="form-control" rows="2" placeholder="Ghi chú thêm..."></textarea>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/Products/Index" class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-primary">💾 Lưu sản phẩm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Validation Scripts -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

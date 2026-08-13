@@ -1,0 +1,207 @@
+@page
+@model PKYDLTWebApp.Pages.Inventory.IndexModel
+@{
+    ViewData["Title"] = "Quản lý Kho";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">📦 Quản lý Kho</h2>
+            <p class="text-muted">Theo dõi tồn kho, cảnh báo hàng hết thiếu, hết hạn</p>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="mb-4">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link @(Model.FilterType == null || Model.FilterType == "all" ? "active" : "")" 
+                   href="/Inventory/Index?filterType=all">
+                    📊 Tất cả (<span class="badge bg-secondary">@Model.Inventories.Count</span>)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.FilterType == "low" ? "active" : "")" 
+                   href="/Inventory/Index?filterType=low">
+                    ⚠️ Hết thiếu (<span class="badge bg-danger">@Model.Inventories.Count(i => i.Quantity < i.MinimumQuantity)</span>)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.FilterType == "expiring" ? "active" : "")" 
+                   href="/Inventory/Index?filterType=expiring">
+                    ⏰ Sắp hết hạn (<span class="badge bg-warning">@Model.Inventories.Count(i => i.Product.ExpiryDate < DateTime.Now.AddDays(30) && i.Product.ExpiryDate > DateTime.Now)</span>)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(Model.FilterType == "expired" ? "active" : "")" 
+                   href="/Inventory/Index?filterType=expired">
+                    ❌ Hết hạn (<span class="badge bg-danger">@Model.Inventories.Count(i => i.Product.ExpiryDate < DateTime.Now)</span>)
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="input-group">
+                <input type="text" name="searchTerm" class="form-control" 
+                       placeholder="🔍 Tìm kiếm mã/tên sản phẩm..." 
+                       value="@Model.SearchTerm" />
+                <button class="btn btn-outline-primary" type="submit">Tìm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">📋 Danh sách tồn kho</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Inventories.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 12%">Mã SP</th>
+                                <th style="width: 25%">Tên sản phẩm</th>
+                                <th style="width: 12%">Tồn hiện tại</th>
+                                <th style="width: 10%">Tối thiểu</th>
+                                <th style="width: 15%">Hạn sử dụng</th>
+                                <th style="width: 12%">Vị trí kho</th>
+                                <th style="width: 14%" class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Inventories)
+                            {
+                                var isLow = item.Quantity < item.MinimumQuantity;
+                                var isExpired = item.Product.ExpiryDate.HasValue && item.Product.ExpiryDate < DateTime.Now;
+                                var isExpiring = item.Product.ExpiryDate.HasValue && 
+                                               item.Product.ExpiryDate < DateTime.Now.AddDays(30) && 
+                                               item.Product.ExpiryDate > DateTime.Now;
+                                var daysLeft = item.Product.ExpiryDate.HasValue ? 
+                                             (int)(item.Product.ExpiryDate.Value - DateTime.Now).TotalDays : 0;
+
+                                <tr class="@(isLow || isExpired ? "table-danger" : isExpiring ? "table-warning" : "")">
+                                    <td><strong>@item.Product.ProductCode</strong></td>
+                                    <td>
+                                        @item.Product.ProductName
+                                        <br />
+                                        <small class="text-muted">@item.Product.Category - @item.Product.Unit</small>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">@item.Quantity</strong>
+                                        @if (isLow)
+                                        {
+                                            <br />
+                                            <small class="text-danger">Thiếu @(item.MinimumQuantity - item.Quantity)</small>
+                                        }
+                                    </td>
+                                    <td>@item.MinimumQuantity</td>
+                                    <td>
+                                        @if (item.Product.ExpiryDate.HasValue)
+                                        {
+                                            if (isExpired)
+                                            {
+                                                <span class="badge bg-danger">HẾT HẠN</span>
+                                            }
+                                            else if (isExpiring)
+                                            {
+                                                <span class="badge bg-warning">SẮP HẾT (@daysLeft ngày)</span><br />
+                                                <small>@item.Product.ExpiryDate?.ToString("dd/MM/yyyy")</small>
+                                            }
+                                            else
+                                            {
+                                                <small>@item.Product.ExpiryDate?.ToString("dd/MM/yyyy")</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">Không xác định</small>
+                                        }
+                                    </td>
+                                    <td>@item.WarehouseLocation</td>
+                                    <td class="text-center">
+                                        @if (isLow)
+                                        {
+                                            <span class="badge bg-danger">🔴 HẾT THIẾU</span>
+                                        }
+                                        else if (isExpired)
+                                        {
+                                            <span class="badge bg-danger">❌ HẾT HẠN</span>
+                                        }
+                                        else if (isExpiring)
+                                        {
+                                            <span class="badge bg-warning">⚠️ SẮP HẾT</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">✓ OK</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">📭 Không tìm thấy mục nào</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>📊 Tổng số loại</h5>
+                    <h2 class="text-primary">@Model.Inventories.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>⚠️ Hết thiếu</h5>
+                    <h2 class="text-danger">@Model.Inventories.Count(i => i.Quantity < i.MinimumQuantity)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>⏰ Sắp hết hạn</h5>
+                    <h2 class="text-warning">
+                        @Model.Inventories.Count(i => 
+                            i.Product.ExpiryDate < DateTime.Now.AddDays(30) && 
+                            i.Product.ExpiryDate > DateTime.Now)
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>❌ Hết hạn</h5>
+                    <h2 class="text-danger">@Model.Inventories.Count(i => i.Product.ExpiryDate < DateTime.Now)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-danger { background-color: #f8d7da; }
+    .table-warning { background-color: #fff3cd; }
+    .nav-link { cursor: pointer; }
+</style>
