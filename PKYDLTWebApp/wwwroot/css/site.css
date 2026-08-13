@@ -1,31 +1,708 @@
+/* ============================================================================
+   SITE CSS - MAIN STYLES
+   ============================================================================
+   Ghi chú: File này chứa các styles chung cho toàn bộ website
+   Để tính năng chỉnh sửa dễ dàng sau này, các section được chia rõ ràng
+
+   Các theme color chính (có thể thay đổi):
+   - Primary: #3B82F6 (Blue)
+   - Secondary: #10B981 (Green)
+   - Danger: #EF4444 (Red)
+   - Background: #F9FAFB (Light Gray)
+   ============================================================================ */
+
+/* ============================================================================
+   1. BIẾN Theme (Variables) - DỄ TÙỶ CHỈNH
+   ============================================================================ */
+:root {
+    /* Màu sắc chính */
+    --primary-color: #3B82F6;
+    --primary-hover: #2563EB;
+    --primary-light: #EFF6FF;
+
+    /* Màu phụ */
+    --secondary-color: #10B981;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+
+    /* Màu background */
+    --bg-primary: #F9FAFB;
+    --bg-secondary: #FFFFFF;
+    --bg-border: #E5E7EB;
+
+    /* Text colors */
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-light: #9CA3AF;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+    /* Transition */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================
+   2. RESET & GLOBAL - CÀI ĐẶT CƠ BẢN
+   ============================================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    line-height: 1.6;
+    margin-bottom: 60px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ============================================================================
+   3. LOGIN PAGE STYLES - TRANG ĐĂNG NHẬP
+   ============================================================================ */
+
+/* Container chính cho trang login */
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    background: var(--bg-primary);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* Responsive: trên desktop là 2 cột, trên mobile là 1 cột */
+@media (min-width: 992px) {
+    .login-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Phần background bên trái - chỉ hiển thị trên desktop */
+.login-background {
+    display: none;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 992px) {
+    .login-background {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: 
+            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%233B82F6;stop-opacity:1" /><stop offset="100%" style="stop-color:%2310B981;stop-opacity:1" /></linearGradient></defs><rect fill="url(%23grad)" width="1200" height="800"/><circle cx="200" cy="150" r="100" fill="%23ffffff" opacity="0.1"/><circle cx="1000" cy="650" r="150" fill="%23ffffff" opacity="0.1"/><path d="M0 400 Q300 200 600 400 T1200 400" stroke="%23ffffff" stroke-width="2" fill="none" opacity="0.2"/></svg>'),
+            linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+/* Overlay - giúp text nổi bật */
+.login-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Brand - Logo & text */
+.login-brand h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-brand p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 300px;
+}
+
+/* Container form - phần bên phải */
+.login-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg-primary);
+}
+
+@media (max-width: 992px) {
+    .login-form-container {
+        padding: 1rem;
+    }
+}
+
+/* Wrapper form */
+.login-form-wrapper {
+    width: 100%;
+    max-width: 420px;
+    animation: slideUp 0.6s ease-out;
+}
+
+/* Header text */
+.login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Alert Error */
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background: #FEE2E2;
+    border: 1px solid #FECACA;
+    border-radius: 0.5rem;
+    color: #991B1B;
+    animation: slideDown 0.4s ease-out;
+}
+
+.alert-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Form styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Form Label */
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.input-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--primary-color);
+}
+
+/* Input styles */
+.form-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--bg-border);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: var(--text-light);
+}
+
+/* Hiệu ứng khi focus */
+.form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    background: var(--bg-secondary);
+}
+
+/* Hiệu ứng hover */
+.form-input:hover {
+    border-color: var(--primary-color);
+}
+
+/* Button Login */
+.btn-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    margin-top: 1rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+/* Hiệu ứng hover button */
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Hiệu ứng active (click) */
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+
+.btn-login:hover .btn-icon {
+    transform: translateX(4px);
+}
+
+/* Footer text */
+.login-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bg-border);
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   4. DASHBOARD & HOME PAGE STYLES
+   ============================================================================ */
+
+.dashboard-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    margin-bottom: 3rem;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.dashboard-welcome {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.welcome-name {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Grid cards */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Card item */
+.card-item {
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    border: 1px solid var(--bg-border);
+    overflow: hidden;
+    transition: var(--transition);
+    text-decoration: none !important;
+    color: inherit !important;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+/* Hiệu ứng hover card */
+.card-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+/* Card header với gradient */
+.card-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Card body */
+.card-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-description {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.card-action {
+    margin-top: auto;
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.card-item:hover .card-action {
+    gap: 1rem;
+}
+
+/* ========== QUICK STATS SECTION ========== */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--bg-border);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ========== DASHBOARD FOOTER ========== */
+.dashboard-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    border-top: 2px solid var(--bg-border);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    animation: slideUp 0.6s ease-out;
+}
+
+.dashboard-footer p {
+    margin: 0;
+}
+
+.dashboard-footer strong {
+    color: var(--primary-color);
+}
+
+/* ============================================================================
+   5. ANIMATIONS - HIỆU ỨNG CHUYỂN ĐỘNG
+   ============================================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* ============================================================================
+   6. RESPONSIVE DESIGN - ỨNG ỨNG CÁC MÀN HÌNH KHÁC NHAU
+   ============================================================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .login-header h2 {
+        font-size: 1.75rem;
+    }
+}
+
+/* Mobile (dưới 480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .login-form-container {
+        padding: 1rem;
+    }
+
+    .login-form-wrapper {
+        max-width: 100%;
+    }
+
+    .login-header {
+        margin-bottom: 2rem;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 1rem 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* ============================================================================
+   7. NAVBAR & HEADER - THANH ĐIỀU HƯỚNG
+   ============================================================================ */
+
+.navbar {
+    box-shadow: var(--shadow-sm);
+    background-color: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--bg-border) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    font-size: 1.3rem;
+}
+
+.nav-link {
+    color: var(--text-primary) !important;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* ============================================================================
+   8. FORM ELEMENTS - PHẦN TỬ FORM CHUNG
+   ============================================================================ */
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem var(--primary-light);
+    border-color: var(--primary-color);
+}
+
+.form-control {
+    border-color: var(--bg-border);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem var(--primary-light);
+}
+
+/* ============================================================================
+   9. UTILITY CLASSES - LỚP TIỆN ÍCH
+   ============================================================================ */
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.bg-primary-light {
+    background-color: var(--primary-light) !important;
+}
+
+.shadow-sm {
+    box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+    box-shadow: var(--shadow-md);
+}
+
+.rounded-lg {
+    border-radius: 0.75rem;
+}
+
+.transition-smooth {
+    transition: var(--transition);
 }
