@@ -30,6 +30,13 @@ builder.Services.AddAuthentication(
 
 var app = builder.Build();
 
+// Tạo/ cập nhật database & Seed dữ liệu mẫu
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+    DbSeeder.Seed(dbContext);
+}
 
 
 if (!app.Environment.IsDevelopment())

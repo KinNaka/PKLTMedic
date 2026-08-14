@@ -118,6 +118,33 @@
                             </div>
                         </div>
 
+                        <!-- ====== THÔNG TIN TỒN KHO BAN ĐẦU ====== -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">📦 Tồn kho ban đầu</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Số lượng tồn kho ban đầu</label>
+                                        <input asp-for="InitialQuantity" type="number" min="0" class="form-control" placeholder="0" />
+                                        <small class="text-muted">Nhập số lượng tồn khi tạo sản phẩm</small>
+                                        <span asp-validation-for="InitialQuantity" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Mức tồn tối thiểu</label>
+                                        <input asp-for="MinimumQuantity" type="number" min="0" class="form-control" placeholder="10" />
+                                        <small class="text-muted">Cảnh báo khi tồn kho dưới mức này</small>
+                                        <span asp-validation-for="MinimumQuantity" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Vị trí kho</label>
+                                        <input asp-for="WarehouseLocation" class="form-control" placeholder="VD: Kệ A1" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Mô tả & Ghi chú -->
                         <div class="mb-3">
                             <label class="form-label">Mô tả sản phẩm</label>

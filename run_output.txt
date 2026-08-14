@@ -1,0 +1,469 @@
+Using launch settings from PKYDLTWebApp\Properties\launchSettings.json...
+Building...
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountAmount' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'PaidAmount' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'ShippingCost' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'SubTotal' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'TotalAmount' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'VATAmount' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'VATPercent' on entity type 'ImportOrder'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Total' on entity type 'ImportOrderDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'UnitPrice' on entity type 'ImportOrderDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountAmount' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'PaidAmount' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'SubTotal' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'TotalAmount' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'VATAmount' on entity type 'Invoice'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Height' on entity type 'Prescription'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Temperature' on entity type 'Prescription'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Weight' on entity type 'Prescription'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'CostPrice' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountPercent' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'RetailPrice' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'WholesalePrice' on entity type 'Product'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'ChangeAmount' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountAmount' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountPercent' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'PaidAmount' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'SubTotal' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'TotalAmount' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'VATAmount' on entity type 'Sale'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountAmount' on entity type 'SaleDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DiscountPercent' on entity type 'SaleDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'Total' on entity type 'SaleDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'UnitPrice' on entity type 'SaleDetail'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[30000]
+      No store type was specified for the decimal property 'DefaultDiscountPercent' on entity type 'Supplier'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (12ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Migrations[20411]
+      Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+info: Microsoft.EntityFrameworkCore.Migrations[20405]
+      No migrations were applied. The database is already up to date.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+      SELECT @result
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Roles] AS [r]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [r].[Id], [r].[CreatedAt], [r].[Description], [r].[Name]
+      FROM [Roles] AS [r]
+      WHERE [r].[Name] = N'Admin'
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[Email], [u].[FullName], [u].[IsActive], [u].[PasswordHash], [u].[Phone], [u].[RoleId], [u].[Username]
+      FROM [Users] AS [u]
+      WHERE [u].[Username] = N'admin'
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      UPDATE [Users] SET [PasswordHash] = @p0
+      OUTPUT 1
+      WHERE [Id] = @p1;
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Suppliers] AS [s]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Products] AS [p]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Customers] AS [c]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:5184
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\Kin\PKYDLTWebapp\PKLTMedic\PKYDLTWebApp
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (17ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [i].[Id], [i].[CreatedAt], [i].[LastCountDate], [i].[LastIssuedDate], [i].[LastReceivedDate], [i].[MaximumQuantity], [i].[MinimumQuantity], [i].[MonthlySalesCount], [i].[Notes], [i].[ProductId], [i].[Quantity], [i].[Status], [i].[UpdatedAt], [i].[WarehouseLocation], [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM [Inventories] AS [i]
+      INNER JOIN [Products] AS [p] ON [i].[ProductId] = [p].[Id]
+      LEFT JOIN [Suppliers] AS [s] ON [p].[SupplierId] = [s].[Id]
+      ORDER BY [i].[Quantity]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM [Suppliers] AS [s]
+      WHERE [s].[IsActive] = CAST(1 AS bit)
+      ORDER BY [s].[SupplierName]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[@__Product_ProductCode_0='?' (Size = 50)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+      FROM [Products] AS [p]
+      WHERE [p].[ProductCode] = @__Product_ProductCode_0
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (11ms) [Parameters=[@p0='?' (Size = 50), @p1='?' (Size = 100), @p2='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p3='?' (DbType = DateTime2), @p4='?' (Size = 500), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = DateTime2), @p7='?' (DbType = Boolean), @p8='?' (DbType = Boolean), @p9='?' (Size = 200), @p10='?' (Size = 200), @p11='?' (Size = 50), @p12='?' (Size = 200), @p13='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p14='?' (Size = 100), @p15='?' (DbType = Int32), @p16='?' (Size = 20), @p17='?' (DbType = DateTime2), @p18='?' (Precision = 18) (Scale = 2) (DbType = Decimal)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Products] ([BatchNumber], [Category], [CostPrice], [CreatedAt], [Description], [DiscountPercent], [ExpiryDate], [IsActive], [IsFeatured], [Notes], [OtherName], [ProductCode], [ProductName], [RetailPrice], [Strength], [SupplierId], [Unit], [UpdatedAt], [WholesalePrice])
+      OUTPUT INSERTED.[Id]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@p0='?' (DbType = DateTime2), @p1='?' (DbType = DateTime2), @p2='?' (DbType = DateTime2), @p3='?' (DbType = DateTime2), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (DbType = Int32), @p7='?' (Size = 300), @p8='?' (DbType = Int32), @p9='?' (DbType = Int32), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2), @p12='?' (Size = 100)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [Inventories] ([CreatedAt], [LastCountDate], [LastIssuedDate], [LastReceivedDate], [MaximumQuantity], [MinimumQuantity], [MonthlySalesCount], [Notes], [ProductId], [Quantity], [Status], [UpdatedAt], [WarehouseLocation])
+      OUTPUT INSERTED.[Id]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Category]
+      FROM (
+          SELECT DISTINCT [p].[Category]
+          FROM [Products] AS [p]
+      ) AS [p0]
+      ORDER BY [p0].[Category]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Products] AS [p]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [p0].[Id], [p0].[BatchNumber], [p0].[Category], [p0].[CostPrice], [p0].[CreatedAt], [p0].[Description], [p0].[DiscountPercent], [p0].[ExpiryDate], [p0].[IsActive], [p0].[IsFeatured], [p0].[Notes], [p0].[OtherName], [p0].[ProductCode], [p0].[ProductName], [p0].[RetailPrice], [p0].[Strength], [p0].[SupplierId], [p0].[Unit], [p0].[UpdatedAt], [p0].[WholesalePrice], [s].[Id], [s].[Address], [s].[BankAccountName], [s].[BankAccountNumber], [s].[BankName], [s].[City], [s].[ContactPerson], [s].[CreatedAt], [s].[DefaultDiscountPercent], [s].[Description], [s].[Email], [s].[IsActive], [s].[PaymentTerms], [s].[Phone], [s].[SupplierCode], [s].[SupplierName], [s].[TaxCode], [s].[UpdatedAt], [s].[ZipCode]
+      FROM (
+          SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+          FROM [Products] AS [p]
+          ORDER BY [p].[ProductCode]
+          OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+      ) AS [p0]
+      LEFT JOIN [Suppliers] AS [s] ON [p0].[SupplierId] = [s].[Id]
+      ORDER BY [p0].[ProductCode]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (8ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [s0].[Id], [s0].[ChangeAmount], [s0].[CreatedAt], [s0].[CreatedByUserId], [s0].[CustomerId], [s0].[DiscountAmount], [s0].[DiscountPercent], [s0].[Notes], [s0].[PaidAmount], [s0].[PaymentMethod], [s0].[PaymentStatus], [s0].[SaleCode], [s0].[SaleDate], [s0].[SalesPersonUserId], [s0].[Status], [s0].[SubTotal], [s0].[TotalAmount], [s0].[UpdatedAt], [s0].[VATAmount], [c].[Id], [c].[Address], [c].[CreatedAt], [c].[CustomerCode], [c].[DateOfBirth], [c].[FullName], [c].[Gender], [c].[Phone]
+      FROM (
+          SELECT TOP(@__p_0) [s].[Id], [s].[ChangeAmount], [s].[CreatedAt], [s].[CreatedByUserId], [s].[CustomerId], [s].[DiscountAmount], [s].[DiscountPercent], [s].[Notes], [s].[PaidAmount], [s].[PaymentMethod], [s].[PaymentStatus], [s].[SaleCode], [s].[SaleDate], [s].[SalesPersonUserId], [s].[Status], [s].[SubTotal], [s].[TotalAmount], [s].[UpdatedAt], [s].[VATAmount]
+          FROM [Sales] AS [s]
+          ORDER BY [s].[SaleDate] DESC
+      ) AS [s0]
+      LEFT JOIN [Customers] AS [c] ON [s0].[CustomerId] = [c].[Id]
+      ORDER BY [s0].[SaleDate] DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [p].[Id], [p].[BatchNumber], [p].[Category], [p].[CostPrice], [p].[CreatedAt], [p].[Description], [p].[DiscountPercent], [p].[ExpiryDate], [p].[IsActive], [p].[IsFeatured], [p].[Notes], [p].[OtherName], [p].[ProductCode], [p].[ProductName], [p].[RetailPrice], [p].[Strength], [p].[SupplierId], [p].[Unit], [p].[UpdatedAt], [p].[WholesalePrice]
+      FROM [Products] AS [p]
+      WHERE [p].[IsActive] = CAST(1 AS bit)
+      ORDER BY [p].[ProductName]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [c].[Id], [c].[Address], [c].[CreatedAt], [c].[CustomerCode], [c].[DateOfBirth], [c].[FullName], [c].[Gender], [c].[Phone]
+      FROM [Customers] AS [c]
+      ORDER BY [c].[FullName]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [s].[Id], [s].[ChangeAmount], [s].[CreatedAt], [s].[CreatedByUserId], [s].[CustomerId], [s].[DiscountAmount], [s].[DiscountPercent], [s].[Notes], [s].[PaidAmount], [s].[PaymentMethod], [s].[PaymentStatus], [s].[SaleCode], [s].[SaleDate], [s].[SalesPersonUserId], [s].[Status], [s].[SubTotal], [s].[TotalAmount], [s].[UpdatedAt], [s].[VATAmount]
+      FROM [Sales] AS [s]
+      ORDER BY [s].[Id] DESC
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (4ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [i0].[Id], [i0].[CreatedAt], [i0].[CreatedByUserId], [i0].[CustomerAddress], [i0].[CustomerEmail], [i0].[CustomerName], [i0].[CustomerPhone], [i0].[DiscountAmount], [i0].[InvoiceDate], [i0].[InvoiceNumber], [i0].[InvoiceType], [i0].[LastPrintedDate], [i0].[Notes], [i0].[PaidAmount], [i0].[PaymentNote], [i0].[PrintCount], [i0].[SaleId], [i0].[Status], [i0].[SubTotal], [i0].[TotalAmount], [i0].[UpdatedAt], [i0].[VATAmount], [s].[Id], [s].[ChangeAmount], [s].[CreatedAt], [s].[CreatedByUserId], [s].[CustomerId], [s].[DiscountAmount], [s].[DiscountPercent], [s].[Notes], [s].[PaidAmount], [s].[PaymentMethod], [s].[PaymentStatus], [s].[SaleCode], [s].[SaleDate], [s].[SalesPersonUserId], [s].[Status], [s].[SubTotal], [s].[TotalAmount], [s].[UpdatedAt], [s].[VATAmount], [c].[Id], [c].[Address], [c].[CreatedAt], [c].[CustomerCode], [c].[DateOfBirth], [c].[FullName], [c].[Gender], [c].[Phone]
+      FROM (
+          SELECT TOP(@__p_0) [i].[Id], [i].[CreatedAt], [i].[CreatedByUserId], [i].[CustomerAddress], [i].[CustomerEmail], [i].[CustomerName], [i].[CustomerPhone], [i].[DiscountAmount], [i].[InvoiceDate], [i].[InvoiceNumber], [i].[InvoiceType], [i].[LastPrintedDate], [i].[Notes], [i].[PaidAmount], [i].[PaymentNote], [i].[PrintCount], [i].[SaleId], [i].[Status], [i].[SubTotal], [i].[TotalAmount], [i].[UpdatedAt], [i].[VATAmount]
+          FROM [Invoices] AS [i]
+          ORDER BY [i].[InvoiceDate] DESC
+      ) AS [i0]
+      INNER JOIN [Sales] AS [s] ON [i0].[SaleId] = [s].[Id]
+      LEFT JOIN [Customers] AS [c] ON [s].[CustomerId] = [c].[Id]
+      ORDER BY [i0].[InvoiceDate] DESC
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...

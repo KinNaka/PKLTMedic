@@ -21,6 +21,20 @@ namespace PKYDLTWebApp.Pages.Products
         [BindProperty]
         public Product Product { get; set; } = new();
 
+        // ============ THÔNG TIN TỒN KHO BAN ĐẦU ============
+        [BindProperty]
+        [Display(Name = "Số lượng tồn kho ban đầu")]
+        public int InitialQuantity { get; set; } = 0;
+
+        [BindProperty]
+        [Display(Name = "Mức tồn tối thiểu")]
+        public int MinimumQuantity { get; set; } = 10;
+
+        [BindProperty]
+        [Display(Name = "Vị trí kho")]
+        [StringLength(100)]
+        public string? WarehouseLocation { get; set; }
+
         public List<Supplier> Suppliers { get; set; } = new();
 
         public async Task OnGetAsync()
@@ -58,6 +72,21 @@ namespace PKYDLTWebApp.Pages.Products
 
             Product.CreatedAt = DateTime.Now;
             _context.Products.Add(Product);
+            await _context.SaveChangesAsync();
+
+            // ============ TỰ ĐỘNG TẠO TỒN KHO CHO SẢN PHẨM MỚI ============
+            var inventory = new ClinicManagement.Models.Inventory
+            {
+                ProductId = Product.Id,
+                Quantity = InitialQuantity,
+                MinimumQuantity = MinimumQuantity,
+                WarehouseLocation = WarehouseLocation,
+                LastReceivedDate = InitialQuantity > 0 ? DateTime.Now : null,
+                Status = "Sẵn",
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Inventories.Add(inventory);
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Thêm sản phẩm thành công";
