@@ -1,0 +1,89 @@
+@page
+@model PKYDLTWebApp.Pages.Invoices.IndexModel
+@{
+    ViewData["Title"] = "Hóa đơn";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🧾 Hóa đơn</h2>
+            <p class="text-muted">Xem và quản lý các hóa đơn bán hàng</p>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">📋 Danh sách hóa đơn (100 hóa đơn gần nhất)</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Invoices.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 15%">Số hóa đơn</th>
+                                <th style="width: 13%">Ngày</th>
+                                <th style="width: 18%">Khách hàng</th>
+                                <th style="width: 12%">Đơn bán</th>
+                                <th style="width: 14%">Tổng tiền</th>
+                                <th style="width: 10%">Lần in</th>
+                                <th style="width: 18%" class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inv in Model.Invoices)
+                            {
+                                <tr>
+                                    <td><strong>@inv.InvoiceNumber</strong></td>
+                                    <td>@inv.InvoiceDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @(string.IsNullOrEmpty(inv.CustomerName) 
+                                            ? (inv.Sale?.Customer?.FullName ?? "Khách lẻ") 
+                                            : inv.CustomerName)
+                                    </td>
+                                    <td>
+                                        @if (inv.Sale != null)
+                                        {
+                                            <a href="/Sales/Index">@inv.Sale.SaleCode</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td><strong>@inv.TotalAmount.ToString("#,##0") đ</strong></td>
+                                    <td>@inv.PrintCount</td>
+                                    <td class="text-center">
+                                        @if (inv.Status == "Huỷ" || inv.Status == "Hủy")
+                                        {
+                                            <span class="badge bg-danger">❌ Hủy</span>
+                                        }
+                                        else if (inv.Status == "Đã in")
+                                        {
+                                            <span class="badge bg-success">✅ Đã in</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">⏳ Chưa in</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center p-5">
+                    <p class="fs-5">📭 Chưa có hóa đơn nào</p>
+                    <p class="text-muted">Hóa đơn sẽ được tạo tự động khi có đơn bán hàng</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

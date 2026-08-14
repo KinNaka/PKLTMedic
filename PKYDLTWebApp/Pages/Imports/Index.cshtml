@@ -1,0 +1,76 @@
+@page
+@model PKYDLTWebApp.Pages.Imports.IndexModel
+@{
+    ViewData["Title"] = "Nhập hàng";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">📥 Nhập hàng</h2>
+            <p class="text-muted">Quản lý nhập kho thuốc, sản phẩm từ các nhà cung cấp</p>
+        </div>
+    </div>
+
+    <!-- Import Orders Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">📋 Danh sách đơn nhập (100 đơn gần nhất)</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.ImportOrders.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 14%">Mã đơn</th>
+                                <th style="width: 14%">Ngày nhập</th>
+                                <th style="width: 20%">Nhà cung cấp</th>
+                                <th style="width: 14%">Số SP</th>
+                                <th style="width: 14%">Tổng tiền</th>
+                                <th style="width: 12%">Đã trả</th>
+                                <th style="width: 12%" class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var io in Model.ImportOrders)
+                            {
+                                var remaining = io.GetRemainingAmount();
+                                <tr>
+                                    <td><strong>@io.ImportCode</strong></td>
+                                    <td>@io.ImportDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@io.Supplier?.SupplierName</td>
+                                    <td>@io.TotalItems</td>
+                                    <td><strong>@io.TotalAmount.ToString("#,##0") đ</strong></td>
+                                    <td>@io.PaidAmount.ToString("#,##0") đ</td>
+                                    <td class="text-center">
+                                        @if (io.Status == "Hủy")
+                                        {
+                                            <span class="badge bg-danger">❌ Hủy</span>
+                                        }
+                                        else if (io.Status == "Đã nhập")
+                                        {
+                                            <span class="badge bg-success">✅ Đã nhập</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">⏳ @io.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center p-5">
+                    <p class="fs-5">📭 Chưa có đơn nhập nào</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

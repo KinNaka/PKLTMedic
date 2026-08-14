@@ -15,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // MVC
 builder.Services.AddControllersWithViews();
 
+// Razor Pages
+builder.Services.AddRazorPages();
+
 
 // Authentication
 builder.Services.AddAuthentication(
@@ -53,6 +56,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+app.MapRazorPages();
 
 
 app.Run();

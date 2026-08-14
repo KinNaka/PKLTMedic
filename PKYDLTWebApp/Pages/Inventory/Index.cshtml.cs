@@ -17,7 +17,7 @@ namespace PKYDLTWebApp.Pages.Inventory
             _context = context;
         }
 
-        public IList<Models.Inventory> Inventories { get; set; } = new List<Models.Inventory>();
+        public IList<ClinicManagement.Models.Inventory> Inventories { get; set; } = new List<ClinicManagement.Models.Inventory>();
 
         [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
