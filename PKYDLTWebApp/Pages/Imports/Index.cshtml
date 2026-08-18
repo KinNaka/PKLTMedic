@@ -6,12 +6,32 @@
 
 <div class="container-fluid mt-4">
     <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-md-8">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
             <h2 class="mb-2">📥 Nhập hàng</h2>
-            <p class="text-muted">Quản lý nhập kho thuốc, sản phẩm từ các nhà cung cấp</p>
+            <p class="text-muted mb-0">Quản lý nhập kho thuốc, sản phẩm từ các nhà cung cấp</p>
+        </div>
+        <div class="col-md-5 text-md-end">
+            <a href="/Imports/Create" class="btn btn-warning text-dark">
+                ➕ Tạo đơn nhập hàng
+            </a>
         </div>
     </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            ✅ @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ❌ @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
     <!-- Import Orders Table -->
     <div class="card">

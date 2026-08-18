@@ -1,0 +1,387 @@
+@page
+@model PKYDLTWebApp.Pages.Imports.CreateModel
+@{
+    ViewData["Title"] = "Tạo Đơn Nhập Hàng";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">📥 Tạo Đơn Nhập Hàng</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["Error"]</div>
+                    }
+
+                    <form method="post" id="importForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                <label class="form-label">Nhà cung cấp <span class="text-danger">*</span></label>
+                                <select asp-for="SupplierId" class="form-select" required>
+                                    <option value="">-- Chọn nhà cung cấp --</option>
+                                    @foreach (var supplier in Model.Suppliers)
+                                    {
+                                        <option value="@supplier.Id">@supplier.SupplierName (@supplier.SupplierCode)</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SupplierId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Mã đơn nhập</label>
+                                <input value="@Model.ImportCode" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Ngày nhập hàng <span class="text-danger">*</span></label>
+                                <input asp-for="ImportDate" type="date" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Số hóa đơn nhà cung cấp</label>
+                                <input asp-for="InvoiceNumber" class="form-control" placeholder="VD: HD000123" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Ngày hóa đơn</label>
+                                <input asp-for="InvoiceDate" type="date" class="form-control" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Địa chỉ giao hàng</label>
+                                <input asp-for="DeliveryAddress" class="form-control" placeholder="VD: 123 Lê Lợi, Quận 1, TP.HCM" />
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">💊 Thêm sản phẩm vào đơn</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Sản phẩm:</label>
+                                        <select id="productSelect" class="form-select">
+                                            <option value="">-- Chọn sản phẩm --</option>
+                                            @foreach (var product in Model.Products)
+                                            {
+                                                <option value="@product.Id"
+                                                        data-code="@product.ProductCode"
+                                                        data-price="@product.CostPrice"
+                                                        data-unit="@product.Unit">
+                                                    @product.ProductCode - @product.ProductName
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Số lượng:</label>
+                                        <input type="number" id="quantityInput" class="form-control" value="1" min="1" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Đơn giá nhập (₫):</label>
+                                        <input type="number" id="priceInput" class="form-control" value="0" min="0" step="1000" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Hạn sử dụng:</label>
+                                        <input type="date" id="expiryInput" class="form-control" />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="form-label">Lô:</label>
+                                        <input type="text" id="batchInput" class="form-control" maxlength="50" />
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-primary w-100" onclick="addItem()">➕</button>
+                                    </div>
+                                </div>
+
+                                <table class="table table-hover mt-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 30%">Sản phẩm</th>
+                                            <th style="width: 10%">Số lượng</th>
+                                            <th style="width: 15%">Đơn giá</th>
+                                            <th style="width: 15%">Thành tiền</th>
+                                            <th style="width: 15%">Hạn sử dụng</th>
+                                            <th style="width: 10%">Lô</th>
+                                            <th style="width: 5%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody"></tbody>
+                                </table>
+
+                                <div id="hiddenInputs"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">🧮 Tổng kết</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-6">Tổng tiền hàng:</div>
+                                            <div class="col-6 text-end"><strong id="subTotal">0đ</strong></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">Chiết khấu (₫):</div>
+                                            <div class="col-6 text-end">
+                                                <input asp-for="DiscountAmount" type="number" class="form-control form-control-sm text-end" min="0" value="0" onchange="calculateTotal()" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">Thuế VAT (%):</div>
+                                            <div class="col-6 text-end">
+                                                <input asp-for="VATPercent" type="number" class="form-control form-control-sm text-end" min="0" max="100" step="0.1" value="0" onchange="calculateTotal()" />
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6">Phí vận chuyển (₫):</div>
+                                            <div class="col-6 text-end">
+                                                <input asp-for="ShippingCost" type="number" class="form-control form-control-sm text-end" min="0" value="0" onchange="calculateTotal()" />
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row mb-2">
+                                            <div class="col-6"><h5>Phải thanh toán:</h5></div>
+                                            <div class="col-6 text-end"><h5 id="totalAmount" class="text-warning">0đ</h5></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">💳 Thanh toán</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label asp-for="PaymentMethod" class="form-label">Phương thức</label>
+                                            <select asp-for="PaymentMethod" class="form-select">
+                                                <option value="Tiền mặt">💵 Tiền mặt</option>
+                                                <option value="Chuyển khoản">🏦 Chuyển khoản</option>
+                                                <option value="Công nợ">📝 Công nợ</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label asp-for="PaidAmount" class="form-label">Số tiền đã trả (₫)</label>
+                                            <input asp-for="PaidAmount" type="number" class="form-control" min="0" value="0" />
+                                        </div>
+                                        <div class="mb-0">
+                                            <label asp-for="Notes" class="form-label">Ghi chú</label>
+                                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Ghi chú thêm về đơn nhập..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="/Imports/Index" class="btn btn-secondary">Hủy</a>
+                            <button type="submit" class="btn btn-success btn-lg">📥 Nhập kho</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">📋 Hướng dẫn</h6>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>Chọn nhà cung cấp</li>
+                        <li>Chọn sản phẩm, nhập số lượng + giá nhập</li>
+                        <li>Nhấn <strong>➕</strong> để thêm vào đơn</li>
+                        <li>Nhập chiết khấu / VAT / phí vận chuyển</li>
+                        <li>Nhấn <strong>📥 Nhập kho</strong> để lưu</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="alert alert-info mb-0">
+                        💡 Sau khi lưu, hệ thống sẽ <strong>tự động cộng tồn kho</strong>
+                        cho từng sản phẩm và cập nhật giá nhập, hạn sử dụng, số lô mới nhất.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- JavaScript -->
+<script>
+    let items = [];
+
+    function addItem() {
+        const select = document.getElementById('productSelect');
+        const quantity = parseInt(document.getElementById('quantityInput').value) || 1;
+        const unitPrice = parseFloat(document.getElementById('priceInput').value) || 0;
+        const expiryDate = document.getElementById('expiryInput').value;
+        const batchNumber = document.getElementById('batchInput').value.trim();
+
+        if (!select.value) {
+            alert('Vui lòng chọn sản phẩm');
+            return;
+        }
+        if (quantity <= 0) {
+            alert('Số lượng phải lớn hơn 0');
+            return;
+        }
+
+        const option = select.options[select.selectedIndex];
+        const productId = parseInt(select.value);
+        const productCode = option.dataset.code;
+        const productName = option.text.split(' - ')[1];
+
+        const existing = items.find(x => x.productId === productId);
+        if (existing) {
+            existing.quantity += quantity;
+        } else {
+            items.push({
+                productId,
+                productName,
+                productCode,
+                quantity,
+                unitPrice,
+                expiryDate,
+                batchNumber
+            });
+        }
+
+        renderTable();
+        renderHiddenInputs();
+        calculateTotal();
+
+        select.value = '';
+        document.getElementById('quantityInput').value = '1';
+        document.getElementById('priceInput').value = '0';
+        document.getElementById('expiryInput').value = '';
+        document.getElementById('batchInput').value = '';
+    }
+
+    function removeItem(productId) {
+        items = items.filter(x => x.productId !== productId);
+        renderTable();
+        renderHiddenInputs();
+        calculateTotal();
+    }
+
+    function updateQuantity(productId, newQuantity) {
+        const item = items.find(x => x.productId === productId);
+        if (item) {
+            item.quantity = parseInt(newQuantity) || 1;
+            renderTable();
+            renderHiddenInputs();
+            calculateTotal();
+        }
+    }
+
+    function updatePrice(productId, newPrice) {
+        const item = items.find(x => x.productId === productId);
+        if (item) {
+            item.unitPrice = parseFloat(newPrice) || 0;
+            renderTable();
+            renderHiddenInputs();
+            calculateTotal();
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        items.forEach(item => {
+            const total = item.unitPrice * item.quantity;
+            const expiryText = item.expiryDate ? item.expiryDate.split('-').reverse().join('/') : '';
+            tbody.innerHTML += `
+                <tr>
+                    <td>
+                        <strong>${item.productName}</strong>
+                        <br /><small class="text-muted">${item.productCode}</small>
+                    </td>
+                    <td>
+                        <input type="number" value="${item.quantity}" min="1"
+                               class="form-control form-control-sm"
+                               onchange="updateQuantity(${item.productId}, this.value)"
+                               style="width: 70px;" />
+                    </td>
+                    <td>
+                        <input type="number" value="${item.unitPrice}" min="0" step="1000"
+                               class="form-control form-control-sm"
+                               onchange="updatePrice(${item.productId}, this.value)"
+                               style="width: 110px;" />
+                    </td>
+                    <td><strong>${total.toLocaleString('vi-VN')}đ</strong></td>
+                    <td>${expiryText}</td>
+                    <td>${item.batchNumber}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger"
+                                onclick="removeItem(${item.productId})">🗑</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        if (items.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-3">
+                        Chưa có sản phẩm nào trong đơn
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderHiddenInputs() {
+        const container = document.getElementById('hiddenInputs');
+        container.innerHTML = '';
+
+        items.forEach((item, i) => {
+            container.innerHTML += `
+                <input type="hidden" name="ImportDetails[${i}].ProductId" value="${item.productId}" />
+                <input type="hidden" name="ImportDetails[${i}].Quantity" value="${item.quantity}" />
+                <input type="hidden" name="ImportDetails[${i}].UnitPrice" value="${item.unitPrice}" />
+                <input type="hidden" name="ImportDetails[${i}].ExpiryDate" value="${item.expiryDate}" />
+                <input type="hidden" name="ImportDetails[${i}].BatchNumber" value="${item.batchNumber}" />
+            `;
+        });
+    }
+
+    function calculateTotal() {
+        const subTotal = items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+        const discount = parseFloat(document.getElementById('DiscountAmount').value) || 0;
+        const vatPercent = parseFloat(document.getElementById('VATPercent').value) || 0;
+        const shipping = parseFloat(document.getElementById('ShippingCost').value) || 0;
+
+        const vatAmount = (subTotal - discount) * (vatPercent / 100);
+        const totalAmount = subTotal - discount + vatAmount + shipping;
+
+        document.getElementById('subTotal').textContent = subTotal.toLocaleString('vi-VN') + 'đ';
+        document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('vi-VN') + 'đ';
+    }
+
+    document.getElementById('quantityInput')?.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addItem();
+        }
+    });
+
+    document.getElementById('productSelect')?.addEventListener('change', function () {
+        const option = this.options[this.selectedIndex];
+        const price = option && option.dataset.price ? parseFloat(option.dataset.price) : 0;
+        document.getElementById('priceInput').value = price || 0;
+    });
+
+    renderTable();
+</script>
