@@ -1,0 +1,182 @@
+@page
+@model PKYDLTWebApp.Pages.Imports.DetailsModel
+@{
+    ViewData["Title"] = "Chi tiết đơn nhập";
+}
+
+@{
+    var io = Model.ImportOrder;
+    var remaining = io.GetRemainingAmount();
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="mb-2">📄 Chi tiết đơn nhập</h2>
+            <p class="text-muted mb-0">Mã đơn: <strong>@io.ImportCode</strong></p>
+        </div>
+        <div class="col-md-5 text-md-end">
+            <a href="/Imports/Index" class="btn btn-secondary">⬅ Quay lại danh sách</a>
+        </div>
+    </div>
+
+    <!-- Trạng thái -->
+    <div class="mb-4">
+        @if (io.Status == "Hủy")
+        {
+            <span class="badge bg-danger fs-6">❌ Hủy</span>
+        }
+        else if (io.Status == "Đã nhập")
+        {
+            <span class="badge bg-success fs-6">✅ Đã nhập</span>
+        }
+        else
+        {
+            <span class="badge bg-warning fs-6">⏳ @io.Status</span>
+        }
+        <span class="badge bg-secondary fs-6 ms-2">💳 @io.PaymentStatus</span>
+    </div>
+
+    <!-- Thông tin chung -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">🏢 Nhà cung cấp</h6>
+                </div>
+                <div class="card-body">
+                    <h5>@(io.Supplier?.SupplierName ?? "—")</h5>
+                    <div class="text-muted small">
+                        <div>Mã: @(io.Supplier?.SupplierCode ?? "—")</div>
+                        <div>Liên hệ: @(io.Supplier?.ContactPerson ?? "—")</div>
+                        <div>Điện thoại: @(io.Supplier?.Phone ?? "—")</div>
+                        <div>Email: @(io.Supplier?.Email ?? "—")</div>
+                        <div>Địa chỉ: @(io.Supplier?.Address ?? "—")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">📅 Thông tin đơn</h6>
+                </div>
+                <div class="card-body small">
+                    <div class="d-flex justify-content-between"><span>Ngày nhập hàng:</span><strong>@io.ImportDate.ToString("dd/MM/yyyy")</strong></div>
+                    <div class="d-flex justify-content-between"><span>Hóa đơn NCC:</span><span>@(io.InvoiceNumber ?? "—")</span></div>
+                    <div class="d-flex justify-content-between"><span>Ngày hóa đơn:</span><span>@(io.InvoiceDate?.ToString("dd/MM/yyyy") ?? "—")</span></div>
+                    <div class="d-flex justify-content-between"><span>Tổng số sản phẩm:</span><strong>@io.TotalItems</strong></div>
+                    <div class="d-flex justify-content-between"><span>Người lập đơn:</span><span>@(io.CreatedByUser?.FullName ?? "—")</span></div>
+                    <div class="d-flex justify-content-between"><span>Địa chỉ giao:</span><span>@(io.DeliveryAddress ?? "—")</span></div>
+                    <div class="d-flex justify-content-between"><span>Ngày tạo:</span><span>@io.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">💳 Tổng kết thanh toán</h6>
+                </div>
+                <div class="card-body small">
+                    <div class="d-flex justify-content-between"><span>Tổng tiền hàng:</span><strong>@io.SubTotal.ToString("#,##0") đ</strong></div>
+                    <div class="d-flex justify-content-between"><span>Chiết khấu:</span><span>(-) @io.DiscountAmount.ToString("#,##0") đ</span></div>
+                    <div class="d-flex justify-content-between"><span>Thuế VAT @(io.VATPercent?.ToString("0.#") ?? "0")%:</span><span>(+) @io.VATAmount.ToString("#,##0") đ</span></div>
+                    <div class="d-flex justify-content-between"><span>Phí vận chuyển:</span><span>(+) @io.ShippingCost.ToString("#,##0") đ</span></div>
+                    <hr />
+                    <div class="d-flex justify-content-between"><strong>Phải thanh toán:</strong><strong class="text-warning">@io.TotalAmount.ToString("#,##0") đ</strong></div>
+                    <div class="d-flex justify-content-between"><span>Đã thanh toán:</span><span>@io.PaidAmount.ToString("#,##0") đ</span></div>
+                    <div class="d-flex justify-content-between">
+                        <span>Còn nợ:</span>
+                        @if (remaining > 0)
+                        {
+                            <span class="text-danger"><strong>@remaining.ToString("#,##0") đ</strong></span>
+                        }
+                        else
+                        {
+                            <span class="text-success fw-bold">✓ Đã thanh toán đủ</span>
+                        }
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between"><span>Phương thức:</span><span>@(io.PaymentMethod ?? "—")</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bảng chi tiết sản phẩm -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">💊 Danh sách sản phẩm nhập (@io.ImportDetails.Count)</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (io.ImportDetails.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 8%">Mã SP</th>
+                                <th style="width: 24%">Tên sản phẩm</th>
+                                <th style="width: 10%">Số lô</th>
+                                <th style="width: 12%">Hạn sử dụng</th>
+                                <th style="width: 9%" class="text-center">SL nhập</th>
+                                <th style="width: 12%">Đơn giá</th>
+                                <th style="width: 11%">Thành tiền</th>
+                                <th style="width: 14%">Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in io.ImportDetails)
+                            {
+                                <tr>
+                                    <td><strong>@d.Product?.ProductCode</strong></td>
+                                    <td>
+                                        @d.Product?.ProductName
+                                        @if (!string.IsNullOrEmpty(d.Product?.Unit))
+                                        {
+                                            <small class="text-muted">(@d.Product.Unit)</small>
+                                        }
+                                    </td>
+                                    <td>@(d.BatchNumber ?? "—")</td>
+                                    <td>@(d.ExpiryDate?.ToString("dd/MM/yyyy") ?? "—")</td>
+                                    <td class="text-center"><strong>@d.Quantity</strong></td>
+                                    <td>@d.UnitPrice.ToString("#,##0") đ</td>
+                                    <td><strong>@d.Total.ToString("#,##0") đ</strong></td>
+                                    <td class="text-muted">@(d.Notes ?? "")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="5" class="text-end"><strong>Tổng cộng:</strong></td>
+                                <td colspan="3" class="text-end"><strong class="text-warning">@io.TotalAmount.ToString("#,##0") đ</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center p-5">
+                    <p class="text-muted">📭 Đơn nhập này không có sản phẩm</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Ghi chú -->
+    @if (!string.IsNullOrEmpty(io.Notes))
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h6 class="mb-0">📝 Ghi chú</h6>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">@io.Notes</p>
+            </div>
+        </div>
+    }
+
+</div>

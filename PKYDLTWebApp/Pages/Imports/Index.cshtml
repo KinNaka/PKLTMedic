@@ -52,6 +52,7 @@
                                 <th style="width: 14%">Tổng tiền</th>
                                 <th style="width: 12%">Đã trả</th>
                                 <th style="width: 12%" class="text-center">Trạng thái</th>
+                                <th style="width: 8%" class="text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,7 +60,7 @@
                             {
                                 var remaining = io.GetRemainingAmount();
                                 <tr>
-                                    <td><strong>@io.ImportCode</strong></td>
+                                    <td><a href="/Imports/Details?id=@io.Id"><strong>@io.ImportCode</strong></a></td>
                                     <td>@io.ImportDate.ToString("dd/MM/yyyy")</td>
                                     <td>@io.Supplier?.SupplierName</td>
                                     <td>@io.TotalItems</td>
@@ -78,6 +79,9 @@
                                         {
                                             <span class="badge bg-warning">⏳ @io.Status</span>
                                         }
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/Imports/Details?id=@io.Id" class="btn btn-sm btn-outline-primary" title="Xem chi tiết">👁</a>
                                     </td>
                                 </tr>
                             }
