@@ -25,6 +25,11 @@ namespace ClinicManagement.Data
         public DbSet<Inventory> Inventories { get; set; }
 
 
+        // ============ INVENTORY ADJUSTMENTS (Kiểm kho / Tinh chỉnh kho) ============
+        public DbSet<InventoryAdjustment> InventoryAdjustments { get; set; }
+        public DbSet<InventoryAdjustmentDetail> InventoryAdjustmentDetails { get; set; }
+
+
         // ============ IMPORT ORDERS ============
         public DbSet<ImportOrder> ImportOrders { get; set; }
         public DbSet<ImportOrderDetail> ImportOrderDetails { get; set; }
@@ -232,6 +237,47 @@ namespace ClinicManagement.Data
                 .WithMany()
                 .HasForeignKey(p => p.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            // ============ INVENTORY ADJUSTMENTS ============
+
+            modelBuilder.Entity<InventoryAdjustment>()
+                .HasIndex(a => a.AdjustmentCode)
+                .IsUnique();
+
+            modelBuilder.Entity<InventoryAdjustment>()
+                .HasIndex(a => a.AdjustmentDate);
+
+            modelBuilder.Entity<InventoryAdjustment>()
+                .HasIndex(a => a.AdjustmentType);
+
+            modelBuilder.Entity<InventoryAdjustmentDetail>()
+                .HasIndex(d => d.InventoryAdjustmentId);
+
+            modelBuilder.Entity<InventoryAdjustmentDetail>()
+                .HasIndex(d => d.ProductId);
+
+
+            // InventoryAdjustment -> CreatedByUser
+            modelBuilder.Entity<InventoryAdjustment>()
+                .HasOne(a => a.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // InventoryAdjustmentDetail -> InventoryAdjustment
+            modelBuilder.Entity<InventoryAdjustmentDetail>()
+                .HasOne(d => d.InventoryAdjustment)
+                .WithMany(a => a.AdjustmentDetails)
+                .HasForeignKey(d => d.InventoryAdjustmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // InventoryAdjustmentDetail -> Product
+            modelBuilder.Entity<InventoryAdjustmentDetail>()
+                .HasOne(d => d.Product)
+                .WithMany()
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

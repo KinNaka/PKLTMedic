@@ -1,0 +1,120 @@
+@page
+@model PKYDLTWebApp.Pages.Adjustments.DetailsModel
+@{
+    ViewData["Title"] = "Chi Tiết Tinh Chỉnh Kho";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🔄 Phiếu Tinh Chỉnh Kho: @Model.Adjustment.AdjustmentCode</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a class="btn btn-outline-secondary" asp-page="Index">← Lịch sử</a>
+            <a class="btn btn-primary" asp-page="Create">➕ Tinh chỉnh mới</a>
+        </div>
+    </div>
+
+    <!-- Info card -->
+    <div class="card mb-4">
+        <div class="card-header bg-light"><h5 class="mb-0">📄 Thông tin phiếu</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <small class="text-muted">Ngày điều chỉnh</small>
+                    <div><strong>@Model.Adjustment.AdjustmentDate.ToString("yyyy-MM-dd HH:mm")</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Loại điều chỉnh</small>
+                    <div><span class="badge bg-info">@Model.Adjustment.AdjustmentType</span></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Người lập</small>
+                    <div><strong>@(Model.Adjustment.CreatedByUser?.FullName ?? "—")</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Trạng thái</small>
+                    <div><span class="badge bg-success">@Model.Adjustment.Status</span></div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <small class="text-muted">Số sản phẩm</small>
+                    <div><strong>@Model.Adjustment.TotalItems</strong></div>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Số sản phẩm chênh lệch</small>
+                    <div><strong>@Model.Adjustment.AdjustedItems</strong></div>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Tổng chênh lệch</small>
+                    <div class="@(Model.Adjustment.TotalQuantityChange > 0 ? "text-success" : Model.Adjustment.TotalQuantityChange < 0 ? "text-danger" : "text-muted")">
+                        <strong>
+                            @if (Model.Adjustment.TotalQuantityChange > 0) { <text>+</text> }
+                            @Model.Adjustment.TotalQuantityChange
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Adjustment.Notes))
+            {
+                <hr />
+                <div>
+                    <small class="text-muted">Ghi chú</small>
+                    <div>@Model.Adjustment.Notes</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Details table -->
+    <div class="card">
+        <div class="card-header bg-light"><h5 class="mb-0">💊 Chi tiết sản phẩm</h5></div>
+        <div class="card-body p-0">
+            @if (Model.Adjustment.AdjustmentDetails.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Mã SP</th>
+                                <th>Tên sản phẩm</th>
+                                <th class="text-center">Tồn hệ thống</th>
+                                <th class="text-center">Tồn thực tế</th>
+                                <th class="text-center">Chênh lệch</th>
+                                <th>Lý do</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var i = 1; }
+                            @foreach (var d in Model.Adjustment.AdjustmentDetails)
+                            {
+                                var diffClass = d.QuantityChange > 0 ? "text-success" : d.QuantityChange < 0 ? "text-danger" : "text-muted";
+                                <tr>
+                                    <td>@(i++)</td>
+                                    <td>@d.Product?.ProductCode</td>
+                                    <td>@d.Product?.ProductName</td>
+                                    <td class="text-center">@d.SystemQuantity</td>
+                                    <td class="text-center">@d.ActualQuantity</td>
+                                    <td class="text-center @diffClass">
+                                        @if (d.QuantityChange > 0) { <text>+</text> }
+                                        @d.QuantityChange
+                                    </td>
+                                    <td>@(d.Reason ?? "—")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">📭 Không có chi tiết</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,245 @@
+@page
+@model PKYDLTWebApp.Pages.Adjustments.CreateModel
+@{
+    ViewData["Title"] = "Tinh Chỉnh Kho";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">🔄 Tinh Chỉnh Kho / Kiểm Kho</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        💡 Nhập <strong>số lượng thực tế đếm được</strong> của từng sản phẩm.
+                        Hệ thống sẽ tự tính chênh lệch so với tồn kho hiện tại và cập nhật lại kho cho khớp với thực tế (tránh lệch thực tồn).
+                    </div>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["Error"]</div>
+                    }
+
+                    <form method="post" id="adjustForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Mã phiếu</label>
+                                <input value="@Model.AdjustmentCode" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Ngày điều chỉnh <span class="text-danger">*</span></label>
+                                <input asp-for="AdjustmentDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Loại điều chỉnh <span class="text-danger">*</span></label>
+                                <select asp-for="AdjustmentType" class="form-select" required>
+                                    <option value="Kiểm kê">Kiểm kê</option>
+                                    <option value="Hư hỏng">Hư hỏng</option>
+                                    <option value="Hết hạn">Hết hạn</option>
+                                    <option value="Điều chỉnh thủ công">Điều chỉnh thủ công</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Ghi chú chung</label>
+                                <textarea asp-for="Notes" class="form-control" rows="2"
+                                          placeholder="VD: Kiểm kê cuối tháng, phát hiện hao hụt ..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">💊 Thêm sản phẩm cần tinh chỉnh</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Sản phẩm</label>
+                                        <select id="productSelect" class="form-select">
+                                            <option value="">-- Chọn sản phẩm --</option>
+                                            @foreach (var p in Model.Products)
+                                            {
+                                                var sysQty = Model.SystemQuantities.ContainsKey(p.Id) ? Model.SystemQuantities[p.Id] : 0;
+                                                <option value="@p.Id" data-name="@p.ProductName" data-unit="@p.Unit" data-qty="@sysQty">
+                                                    @p.ProductCode - @p.ProductName (Tồn: @sysQty @p.Unit)
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Số tồn thực tế</label>
+                                        <input id="actualInput" type="number" class="form-control" min="0" value="0" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Lý do chênh lệch</label>
+                                        <input id="reasonInput" type="text" class="form-control" placeholder="VD: hao hụt, hư hỏng..." />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-primary w-100" onclick="addItem()">➕ Thêm</button>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 35%">Sản phẩm</th>
+                                                <th style="width: 12%">Tồn hệ thống</th>
+                                                <th style="width: 12%">Tồn thực tế</th>
+                                                <th style="width: 12%">Chênh lệch</th>
+                                                <th style="width: 20%">Lý do</th>
+                                                <th style="width: 9%" class="text-center">Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="itemsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-3">Chưa có sản phẩm nào</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="hiddenInputs"></div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-page="Index" class="btn btn-outline-secondary">← Quay lại</a>
+                            <button type="submit" class="btn btn-success btn-lg">💾 Lưu tinh chỉnh kho</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const items = [];
+
+    function addItem() {
+        const select = document.getElementById('productSelect');
+        const actualInput = document.getElementById('actualInput');
+        const reasonInput = document.getElementById('reasonInput');
+
+        const option = select.options[select.selectedIndex];
+        if (!option || !option.value) {
+            alert('Vui lòng chọn sản phẩm');
+            return;
+        }
+
+        const productId = parseInt(option.value);
+        const name = option.dataset.name;
+        const unit = option.dataset.unit;
+        const systemQty = parseInt(option.dataset.qty) || 0;
+        const actualQty = parseInt(actualInput.value) || 0;
+        const reason = reasonInput.value.trim();
+
+        if (items.some(i => i.productId === productId)) {
+            alert('Sản phẩm này đã có trong phiếu');
+            return;
+        }
+
+        items.push({ productId, name, unit, systemQty, actualQty, reason });
+        actualInput.value = 0;
+        reasonInput.value = '';
+        select.value = '';
+        renderTable();
+        renderHiddenInputs();
+    }
+
+    function removeItem(productId) {
+        const idx = items.findIndex(i => i.productId === productId);
+        if (idx >= 0) {
+            items.splice(idx, 1);
+        }
+        renderTable();
+        renderHiddenInputs();
+    }
+
+    function updateActual(productId, val) {
+        const item = items.find(i => i.productId === productId);
+        if (item) {
+            item.actualQty = parseInt(val) || 0;
+            renderTable();
+            renderHiddenInputs();
+        }
+    }
+
+    function updateReason(productId, val) {
+        const item = items.find(i => i.productId === productId);
+        if (item) {
+            item.reason = val;
+            renderHiddenInputs();
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('itemsTable');
+
+        if (items.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-3">Chưa có sản phẩm nào</td>
+                </tr>`;
+            return;
+        }
+
+        tbody.innerHTML = items.map(item => {
+            const diff = item.actualQty - item.systemQty;
+            const diffClass = diff > 0 ? 'text-success' : (diff < 0 ? 'text-danger' : 'text-muted');
+            const diffText = diff > 0 ? '+' + diff : diff;
+
+            return `
+                <tr>
+                    <td><strong>${item.name}</strong> <small class="text-muted">(${item.unit})</small></td>
+                    <td class="text-center">${item.systemQty}</td>
+                    <td>
+                        <input type="number" min="0" value="${item.actualQty}"
+                               class="form-control form-control-sm"
+                               onchange="updateActual(${item.productId}, this.value)"
+                               style="width: 80px;" />
+                    </td>
+                    <td class="text-center ${diffClass}"><strong>${diffText}</strong></td>
+                    <td>
+                        <input type="text" value="${item.reason}" class="form-control form-control-sm"
+                               onchange="updateReason(${item.productId}, this.value)"
+                               placeholder="Lý do..." />
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-danger"
+                                onclick="removeItem(${item.productId})">🗑</button>
+                    </td>
+                </tr>`;
+        }).join('');
+    }
+
+    function renderHiddenInputs() {
+        const container = document.getElementById('hiddenInputs');
+        container.innerHTML = '';
+
+        items.forEach((item, i) => {
+            container.innerHTML += `
+                <input type="hidden" name="Details[${i}].ProductId" value="${item.productId}" />
+                <input type="hidden" name="Details[${i}].ActualQuantity" value="${item.actualQty}" />
+                <input type="hidden" name="Details[${i}].Reason" value="${item.reason}" />
+            `;
+        });
+    }
+
+    document.getElementById('productSelect')?.addEventListener('change', function () {
+        const option = this.options[this.selectedIndex];
+        if (option && option.value) {
+            document.getElementById('actualInput').value = option.dataset.qty || 0;
+        }
+    });
+</script>

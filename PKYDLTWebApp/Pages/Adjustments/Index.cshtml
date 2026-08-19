@@ -1,0 +1,146 @@
+@page
+@model PKYDLTWebApp.Pages.Adjustments.IndexModel
+@{
+    ViewData["Title"] = "Tinh Chỉnh Kho";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🔄 Tinh Chỉnh Kho / Kiểm Kho</h2>
+            <p class="text-muted">Lịch sử các phiếu điều chỉnh tồn kho để khớp với số thực tế (tránh lệch thực tồn)</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a class="btn btn-outline-secondary" asp-page="/Inventory/Index">📦 Kho</a>
+            <a class="btn btn-primary" asp-page="Create">➕ Tinh chỉnh kho</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <!-- Filter tabs -->
+    <div class="mb-4">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link @(Model.TypeFilter == null || Model.TypeFilter == "all" ? "active" : "")"
+                   href="/Adjustments/Index?typeFilter=all">
+                    📊 Tất cả
+                </a>
+            </li>
+            @foreach (var t in Model.Types)
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(Model.TypeFilter == t ? "active" : "")" href="/Adjustments/Index?typeFilter=@t">
+                        @t
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="input-group">
+                <input type="hidden" name="typeFilter" value="@Model.TypeFilter" />
+                <input type="text" name="searchTerm" class="form-control"
+                       placeholder="🔍 Tìm kiếm theo mã phiếu, loại, ghi chú..." value="@Model.SearchTerm" />
+                <button class="btn btn-outline-primary" type="submit">Tìm</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">📋 Danh sách phiếu điều chỉnh kho</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Adjustments.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày</th>
+                                <th>Loại</th>
+                                <th class="text-center">Số SP</th>
+                                <th class="text-center">Chênh lệch</th>
+                                <th>Người lập</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.Adjustments)
+                            {
+                                var badgeClass = a.AdjustmentType == "Kiểm kê" ? "bg-info" :
+                                                 a.AdjustmentType == "Hư hỏng" ? "bg-warning text-dark" :
+                                                 a.AdjustmentType == "Hết hạn" ? "bg-danger" :
+                                                 "bg-secondary";
+                                <tr>
+                                    <td><strong>@a.AdjustmentCode</strong></td>
+                                    <td>@a.AdjustmentDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td><span class="badge @badgeClass">@a.AdjustmentType</span></td>
+                                    <td class="text-center">@a.TotalItems</td>
+                                    <td class="text-center @(a.TotalQuantityChange > 0 ? "text-success" : a.TotalQuantityChange < 0 ? "text-danger" : "text-muted")">
+                                        @if (a.TotalQuantityChange > 0) { <text>+</text> }
+                                        @a.TotalQuantityChange
+                                    </td>
+                                    <td>@(a.CreatedByUser?.FullName ?? "—")</td>
+                                    <td class="text-center"><span class="badge bg-success">@a.Status</span></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-outline-primary" asp-page="Details" asp-route-id="@a.Id">Xem</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <p class="text-muted">📭 Không tìm thấy phiếu nào</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>📊 Tổng phiếu</h5>
+                    <h2 class="text-primary">@Model.Adjustments.Count</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>🔢 Tổng chênh lệch</h5>
+                    @{ var sum = Model.Adjustments.Sum(a => a.TotalQuantityChange); }
+                    <h2 class="@(sum > 0 ? "text-success" : sum < 0 ? "text-danger" : "text-muted")">
+                        @if (sum > 0) { <text>+</text> }
+                        @sum
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>✅ Sản phẩm đã tinh chỉnh</h5>
+                    @{ var adjSum = Model.Adjustments.Sum(a => a.AdjustedItems); }
+                    <h2 class="text-info">@adjSum</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
