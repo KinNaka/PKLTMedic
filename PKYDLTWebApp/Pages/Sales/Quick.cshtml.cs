@@ -26,6 +26,14 @@ namespace PKYDLTWebApp.Pages.Sales
         public List<Product> Products { get; set; } = new();
         public List<Customer> Customers { get; set; } = new();
 
+        /// <summary>Trường ẩn - định in (invoice, invoice_noname, drug, none)</summary>
+        [BindProperty]
+        public string? PrintOption { get; set; }
+
+        /// <summary>Đơn bán để hiển thị trường in sau đơn chuyển</summary>
+        public Sale? PrintSale { get; set; }
+        public string? PrintFormat { get; set; }
+
         public async Task OnGetAsync()
         {
             Products = await _context.Products
@@ -36,6 +44,19 @@ namespace PKYDLTWebApp.Pages.Sales
             Customers = await _context.Customers
                 .OrderBy(c => c.FullName)
                 .ToListAsync();
+
+            // ============ IN DOCUMENT (redirect from OnPost) ============
+            var printSaleIdText = TempData["PrintSaleId"] as string;
+            if (!string.IsNullOrWhiteSpace(printSaleIdText))
+            {
+                var saleId = int.Parse(printSaleIdText);
+                PrintFormat = TempData["PrintFormat"] as string;
+                if (string.IsNullOrWhiteSpace(PrintFormat))
+                {
+                    PrintFormat = "invoice";
+                }
+                await LoadPrintDataAsync(saleId);
+            }
 
             // Generate sale code
             var lastSale = await _context.Sales
@@ -159,6 +180,16 @@ namespace PKYDLTWebApp.Pages.Sales
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Ghi nhận bán hàng + lưu hóa đơn + trừ kho thành công. Đơn bán: " + Sale.SaleCode;
+
+            // ============ IN ĐƠCÚMENT (redirect to print receipt) ============
+            var printOption = !string.IsNullOrWhiteSpace(PrintOption) ? PrintOption.Trim() : "none";
+            if (printOption != "none")
+            {
+                TempData["PrintSaleId"] = Sale.Id.ToString();
+                TempData["PrintFormat"] = printOption;
+                return RedirectToPage("Quick");
+            }
+
             return RedirectToPage("Index");
         }
 
@@ -192,6 +223,15 @@ namespace PKYDLTWebApp.Pages.Sales
             Customers = await _context.Customers
                 .OrderBy(c => c.FullName)
                 .ToListAsync();
+        }
+
+        private async Task LoadPrintDataAsync(int saleId)
+        {
+            PrintSale = await _context.Sales
+                .Include(s => s.Customer)
+                .Include(s => s.SaleDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefaultAsync(s => s.Id == saleId);
         }
 
         private async Task<int?> GetCurrentUserIdAsync()

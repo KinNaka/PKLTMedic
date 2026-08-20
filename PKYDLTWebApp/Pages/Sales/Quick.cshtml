@@ -5,6 +5,115 @@
 }
 
 <div class="container-fluid mt-4">
+    @if (Model.PrintSale != null)
+    {
+        var pr = Model.PrintSale;
+        var drugOnly = Model.PrintFormat == "drug";
+        var hideItems = Model.PrintFormat == "invoice_noname";
+        var cname = pr.Customer?.FullName ?? "Khách lẻ";
+        var subItems = pr.SaleDetails?.Sum(x => x.Quantity * x.UnitPrice) ?? 0;
+        var disc = pr.DiscountAmount;
+        var grand = pr.TotalAmount;
+        var paid = pr.PaidAmount;
+        var chg = pr.ChangeAmount;
+        <style>
+            .receipt-card { border: 1px solid #0d6efd; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
+            .receipt-table { margin-bottom: 0.5rem; }
+            @@media print {
+                body * { visibility: hidden; }
+                #receiptPrint, #receiptPrint * { visibility: visible; }
+                #receiptPrint { position: absolute; left: 0; top: 0; width: 100%; }
+            }
+        </style>
+        <div class="receipt-card card mb-4" id="receiptPrint">
+<div class="card-header bg-white text-dark d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">@(drugOnly ? "💊 Toa Thuốc" : "🧾 Hóa đơn") — @pr.SaleCode</h4>
+                <div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">🖨 In</button>
+                    <a href="/Sales/Quick" class="btn btn-outline-secondary btn-sm">➕ Bán hàng mới</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-4"><strong>Khách:</strong> @cname</div>
+                    <div class="col-md-4"><strong>Ngày:</strong> @pr.SaleDate.ToString("dd/MM/yyyy HH:mm")</div>
+                    <div class="col-md-4"><strong>Phương thức:</strong> @pr.PaymentMethod</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm receipt-table">
+                        <thead class="table-light">
+                            <tr>
+                                @if (drugOnly)
+                                {
+                                    <th>Thuốc</th>
+                                    <th>Số lượng</th>
+                                    <th>Đầu bán</th>
+                                    <th>Ghi chú</th>
+                                }
+                                else
+                                {
+                                    @if (!hideItems)
+                                    {
+                                        <th>Sản phẩm</th>
+                                    }
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th class="text-end">Thành tiền</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in pr.SaleDetails)
+                            {
+                                var lineTotal = d.Quantity * d.UnitPrice;
+                                <tr>
+                                    @if (drugOnly)
+                                    {
+                                        <td>@(d.Product?.ProductName ?? "-")</td>
+                                        <td>@d.Quantity @(d.Product?.Unit ?? "")</td>
+                                        <td>@(d.Product?.Strength ?? "-")</td>
+                                        <td>@(d.Notes ?? "")</td>
+                                    }
+                                    else
+                                    {
+                                        @if (!hideItems)
+                                        {
+                                            <td>
+                                                @(d.Product?.ProductName ?? "-")
+                                                @if (!string.IsNullOrEmpty(d.Notes))
+                                                {
+                                                    <br /><small>@d.Notes</small>
+                                                }
+                                            </td>
+                                        }
+                                        <td>@d.Quantity</td>
+                                        <td>@d.UnitPrice.ToString("#,##0") đ</td>
+                                        <td class="text-end">@lineTotal.ToString("#,##0") đ</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @if (!drugOnly)
+                {
+                    <div class="row mb-1">
+                        <div class="col-6">Tổng hàng:</div><div class="col-6 text-end">@subItems.ToString("#,##0") đ</div>
+                        <div class="col-6">Chiết khấu:</div><div class="col-6 text-end">-@disc.ToString("#,##0") đ</div>
+                        <div class="col-6 fw-bold">Tổng phải trả:</div><div class="col-6 text-end fw-bold">@grand.ToString("#,##0") đ</div>
+                        <div class="col-6">Khách trả:</div><div class="col-6 text-end">@paid.ToString("#,##0") đ</div>
+                        <div class="col-6">Thối lại:</div><div class="col-6 text-end">@chg.ToString("#,##0") đ</div>
+                    </div>
+                }
+            </div>
+        </div>
+        <script>
+            window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 500); });
+        </script>
+    }
+    else
+    {
+
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -13,15 +122,16 @@
                 </div>
                 <div class="card-body">
                     <form method="post" id="saleForm">
-                        <!-- Mã ghi nhận & Khách hàng -->
-                        <div class="row mb-3">
+<div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Mã ghi nhận:</label>
                                 <input asp-for="Sale.SaleCode" class="form-control" readonly />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Khách hàng:</label>
-                                <select asp-for="Sale.CustomerId" class="form-select">
+                                <input type="text" id="customerSearch" class="form-control form-control-sm mb-1"
+                                       placeholder="Nhập tên/điện thoại để tìm..." oninput="filterOptions('customerSearch','customerSelect')" />
+                                <select asp-for="Sale.CustomerId" class="form-select" id="customerSelect">
                                     <option value="">-- Khách lẻ --</option>
                                     @foreach (var customer in Model.Customers)
                                     {
@@ -38,8 +148,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="row g-2">
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <label class="form-label">Sản phẩm:</label>
+                                        <input type="text" id="productSearch" class="form-control form-control-sm mb-1"
+                                               placeholder="Nhập mã/tên sản phẩm để tìm..." oninput="filterOptions('productSearch','productSelect')" />
                                         <select id="productSelect" class="form-select">
                                             <option value="">-- Chọn sản phẩm --</option>
                                             @foreach (var product in Model.Products)
@@ -50,11 +162,15 @@
                                             }
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <label class="form-label">Số lượng:</label>
                                         <input type="number" id="quantityInput" class="form-control" value="1" min="1" />
                                     </div>
-                                    <div class="col-md-3 d-flex align-items-end">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Ghi chú sản phẩm:</label>
+                                        <input type="text" id="noteInput" class="form-control" placeholder="ghi chú (nếu có)" />
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
                                         <button type="button" class="btn btn-primary w-100" onclick="addProduct()">
                                             ➕ Thêm
                                         </button>
@@ -62,14 +178,14 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Bảng sản phẩm -->
+<!-- Bảng sản phẩm -->
                         <table class="table table-hover" id="productsTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>Sản phẩm</th>
                                     <th>Đơn giá</th>
                                     <th>Số lượng</th>
+                                    <th>Ghi chú</th>
                                     <th>Thành tiền</th>
                                     <th></th>
                                 </tr>
@@ -87,51 +203,49 @@
                                             <div class="col-6 text-end"><strong id="subTotal">0đ</strong></div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-6">Chiết khấu (%):</div>
+                                            <div class="col-6">Discount (%):</div>
                                             <div class="col-6">
-                                                <input type="number" id="discountPercent" class="form-control form-control-sm" 
+                                                <input type="number" id="discountPercent" class="form-control form-control-sm"
                                                        value="0" step="0.1" onchange="calculateTotal()" />
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-6">Chiết khấu (₫):</div>
+                                            <div class="col-6">Discount (VND):</div>
                                             <div class="col-6 text-end"><strong id="discountAmount">0đ</strong></div>
                                         </div>
                                         <hr />
                                         <div class="row">
-                                            <div class="col-6"><h5>Tổng phải trả:</h5></div>
+                                            <div class="col-6"><h5>Total to pay:</h5></div>
                                             <div class="col-6 text-end"><h5 id="totalAmount" class="text-primary">0đ</h5></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Thanh toán -->
+<!-- Thanh toan -->
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header bg-light">
-                                        <h6 class="mb-0">Thanh toán</h6>
+                                        <h6 class="mb-0">Thanh toan</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <label asp-for="Sale.PaymentMethod" class="form-label">Phương thức</label>
+                                                <label asp-for="Sale.PaymentMethod" class="form-label">Payment method</label>
                                                 <select asp-for="Sale.PaymentMethod" class="form-select">
-                                                    <option value="Tiền mặt">💵 Tiền mặt</option>
-                                                    <option value="Chuyển khoản">🏦 Chuyển khoản</option>
-                                                    <option value="QR Code">📱 QR Code</option>
-                                                    <option value="Nợ">📝 Nợ</option>
+                                                    <option value="Tiền mặt">Cash</option>
+                                                    <option value="Chuyển khoản">Bank transfer</option>
+                                                    <option value="QR Code">QR Code</option>
+                                                    <option value="Nợ">Debt</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label">Khách trả:</label>
-                                                <input type="number" id="paidAmount" class="form-control" value="0" 
-                                                       onchange="calculateChange()" />
+                                                <label class="form-label">Khach paid:</label>
+                                                <input type="number" id="paidAmount" class="form-control" value="0" onchange="calculateChange()" />
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label">Thối lại:</label>
+                                                <label class="form-label">Change:</label>
                                                 <input type="number" id="change" class="form-control" readonly />
                                             </div>
                                         </div>
@@ -140,54 +254,98 @@
                             </div>
                         </div>
 
-                        <!-- Hidden input để gửi details -->
                         <div id="saleDetailsHidden"></div>
+                        <input type="hidden" id="printOptionHidden" name="PrintOption" value="" />
 
-                        <!-- Nút hành động -->
+                        <!-- Action buttons -->
                         <div class="mt-4 d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="/Sales/Index" class="btn btn-secondary">Quay lại</a>
-                            <button type="submit" class="btn btn-success btn-lg" onclick="return prepareSubmit()">
-                                💾 Ghi nhận bán hàng
+                            <a href="/Sales/Index" class="btn btn-secondary">Back</a>
+                            <button type="submit" class="btn btn-success btn-lg" onclick="return preparePrintModal()">
+                                Save sale and pay
                             </button>
                         </div>
                     </form>
+<!-- Print options modal -->
+                    <div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Print invoice / receipt</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-muted mb-2">Choose what to print after saving:</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="salePrintOption" id="poFull" value="invoice" checked>
+                                        <label class="form-check-label" for="poFull">Invoice (with product names)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="salePrintOption" id="poNoname" value="invoice_noname">
+                                        <label class="form-check-label" for="poNoname">Invoice (without product names)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="salePrintOption" id="poDrug" value="drug">
+                                        <label class="form-check-label" for="poDrug">Prescription / drug receipt only</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="salePrintOption" id="poNone" value="none">
+                                        <label class="form-check-label" for="poNone">No print (record only)</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-success" onclick="confirmPrintSale()">Save & Print</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Sidebar: Recent sales -->
+        <!-- Sidebar: guide -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-light">
-                    <h6 class="mb-0">📋 Ghi chú</h6>
+                    <h6 class="mb-0">Guide</h6>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong>Hướng dẫn:</strong>
                         <ul class="mb-0">
-                            <li>Chọn sản phẩm từ dropdown</li>
-                            <li>Nhập số lượng muốn bán</li>
-                            <li>Nhấn nút "Thêm"</li>
-                            <li>Nhập số tiền khách trả</li>
-                            <li>Nhấn "Ghi nhận bán hàng"</li>
+                            <li>Type to search customer / product</li>
+                            <li>Set quantity, optional note, press Add</li>
+                            <li>Enter the paid amount</li>
+                            <li>Press Save sale and pay to choose print</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    }
 </div>
-
 <!-- JavaScript -->
 <script>
     let cartItems = [];
 
+    function filterOptions(inputId, selectId) {
+        const input = document.getElementById(inputId);
+        const txt = (input ? input.value : '').trim().toLowerCase();
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        for (let i = 0; i < sel.options.length; i++) {
+            const opt = sel.options[i];
+            if (opt.value === '') { opt.hidden = false; continue; }
+            opt.hidden = txt !== '' && opt.text.toLowerCase().indexOf(txt) === -1;
+        }
+    }
+
     function addProduct() {
         const select = document.getElementById('productSelect');
         const quantity = parseInt(document.getElementById('quantityInput').value) || 1;
+        const note = document.getElementById('noteInput').value.trim();
 
         if (!select.value) {
-            alert('Vui lòng chọn sản phẩm');
+            alert('Please choose a product first');
             return;
         }
 
@@ -197,20 +355,20 @@
         const unitPrice = parseFloat(option.dataset.price);
         const unit = option.dataset.unit;
 
-        // Kiểm tra xem product đã có trong giỏ không
         let item = cartItems.find(x => x.productId === productId);
         if (item) {
             item.quantity += quantity;
+            if (note) item.notes = note;
         } else {
-            cartItems.push({ productId, productName, unitPrice, unit, quantity });
+            cartItems.push({ productId, productName, unitPrice, unit, quantity, notes: note });
         }
 
         renderTable();
         calculateTotal();
 
-        // Reset input
         select.value = '';
         document.getElementById('quantityInput').value = '1';
+        document.getElementById('noteInput').value = '';
     }
 
     function removeProduct(productId) {
@@ -218,22 +376,20 @@
         renderTable();
         calculateTotal();
     }
-
-    function renderTable() {
+function renderTable() {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
-
         cartItems.forEach(item => {
             const total = item.unitPrice * item.quantity;
             tbody.innerHTML += `
                 <tr>
                     <td>${item.productName}<br/><small class="text-muted">${item.unit}</small></td>
-                    <td>${item.unitPrice.toLocaleString('vi-VN')}đ</td>
-                    <td><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.productId}, this.value)" style="width: 60px;" class="form-control form-control-sm" /></td>
-                    <td>${total.toLocaleString('vi-VN')}đ</td>
-                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${item.productId})">🗑</button></td>
-                </tr>
-            `;
+                    <td>${item.unitPrice.toLocaleString('vi-VN')} <small>VND</small></td>
+                    <td><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.productId}, this.value)" style="width:60px;" class="form-control form-control-sm"/></td>
+                    <td><input type="text" value="${item.notes || ''}" onchange="updateNote(${item.productId}, this.value)" class="form-control form-control-sm" style="min-width:110px;"/></td>
+                    <td>${total.toLocaleString('vi-VN')} <small>VND</small></td>
+                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${item.productId})">x</button></td>
+                </tr>`;
         });
     }
 
@@ -241,8 +397,14 @@
         const item = cartItems.find(x => x.productId === productId);
         if (item) {
             item.quantity = parseInt(newQuantity) || 1;
+            renderTable();
             calculateTotal();
         }
+    }
+
+    function updateNote(productId, note) {
+        const item = cartItems.find(x => x.productId === productId);
+        if (item) item.notes = note.trim();
     }
 
     function calculateTotal() {
@@ -250,29 +412,18 @@
         const discountPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
         const discountAmount = subTotal * (discountPercent / 100);
         const totalAmount = subTotal - discountAmount;
-
-        document.getElementById('subTotal').textContent = subTotal.toLocaleString('vi-VN') + 'đ';
-        document.getElementById('discountAmount').textContent = discountAmount.toLocaleString('vi-VN') + 'đ';
-        document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('vi-VN') + 'đ';
-
+        document.getElementById('subTotal').textContent = subTotal.toLocaleString('vi-VN') + ' VND';
+        document.getElementById('discountAmount').textContent = discountAmount.toLocaleString('vi-VN') + ' VND';
+        document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('vi-VN') + ' VND';
         calculateChange();
     }
 
     function calculateChange() {
-        const totalAmount = parseFloat(document.getElementById('totalAmount').textContent.replace(/[^\d]/g, '')) || 0;
+        const totalAmount = parseFloat(document.getElementById('totalAmount').textContent.replace(/[^\d-]/g, '')) || 0;
         const paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
-        const change = paidAmount - totalAmount;
-
-        document.getElementById('change').value = change;
+        document.getElementById('change').value = (paidAmount - totalAmount);
     }
-
-    function prepareSubmit() {
-        if (cartItems.length === 0) {
-            alert('Vui lòng thêm sản phẩm');
-            return false;
-        }
-
-        // Gửi chi tiết dưới dạng trường ẩn để binding POST (SaleDetails[i].*)
+function prepareHiddenDetails() {
         const container = document.getElementById('saleDetailsHidden');
         container.innerHTML = '';
         cartItems.forEach((item, i) => {
@@ -280,9 +431,8 @@
                 <input type="hidden" name="SaleDetails[${i}].ProductId" value="${item.productId}" />
                 <input type="hidden" name="SaleDetails[${i}].Quantity" value="${item.quantity}" />
                 <input type="hidden" name="SaleDetails[${i}].UnitPrice" value="${item.unitPrice}" />
-            `;
+                <input type="hidden" name="SaleDetails[${i}].Notes" value="${item.notes || ''}" />`;
         });
-
         const discountInput = document.createElement('input');
         discountInput.type = 'hidden';
         discountInput.name = 'Sale.DiscountPercent';
@@ -294,12 +444,26 @@
         paidInput.name = 'Sale.PaidAmount';
         paidInput.value = document.getElementById('paidAmount').value || '0';
         container.appendChild(paidInput);
-
-        return true;
     }
 
-    // Allow Enter key to add product
-    document.getElementById('quantityInput')?.addEventListener('keypress', function(e) {
+    function preparePrintModal() {
+        if (cartItems.length === 0) {
+            alert('Please add at least one product');
+            return false;
+        }
+        prepareHiddenDetails();
+        const m = new bootstrap.Modal(document.getElementById('printModal'));
+        m.show();
+        return false;
+    }
+
+    function confirmPrintSale() {
+        const selected = document.querySelector('input[name="salePrintOption"]:checked');
+        document.getElementById('printOptionHidden').value = selected ? selected.value : 'none';
+        document.getElementById('saleForm').submit();
+    }
+
+    document.getElementById('quantityInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             addProduct();
