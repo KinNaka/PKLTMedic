@@ -141,12 +141,12 @@
                         </div>
 
                         <!-- Hidden input để gửi details -->
-                        <input type="hidden" id="detailsJson" name="detailsJson" />
+                        <div id="saleDetailsHidden"></div>
 
                         <!-- Nút hành động -->
                         <div class="mt-4 d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="/Sales/Index" class="btn btn-secondary">Quay lại</a>
-                            <button type="submit" class="btn btn-success btn-lg" onclick="prepareSubmit()">
+                            <button type="submit" class="btn btn-success btn-lg" onclick="return prepareSubmit()">
                                 💾 Ghi nhận bán hàng
                             </button>
                         </div>
@@ -269,12 +269,33 @@
     function prepareSubmit() {
         if (cartItems.length === 0) {
             alert('Vui lòng thêm sản phẩm');
-            event.preventDefault();
-            return;
+            return false;
         }
 
-        // Ghi dữ liệu vào input ẩn (dùng POST binding)
-        // Hoặc submit trực tiếp form với POST
+        // Gửi chi tiết dưới dạng trường ẩn để binding POST (SaleDetails[i].*)
+        const container = document.getElementById('saleDetailsHidden');
+        container.innerHTML = '';
+        cartItems.forEach((item, i) => {
+            container.innerHTML += `
+                <input type="hidden" name="SaleDetails[${i}].ProductId" value="${item.productId}" />
+                <input type="hidden" name="SaleDetails[${i}].Quantity" value="${item.quantity}" />
+                <input type="hidden" name="SaleDetails[${i}].UnitPrice" value="${item.unitPrice}" />
+            `;
+        });
+
+        const discountInput = document.createElement('input');
+        discountInput.type = 'hidden';
+        discountInput.name = 'Sale.DiscountPercent';
+        discountInput.value = document.getElementById('discountPercent').value || '0';
+        container.appendChild(discountInput);
+
+        const paidInput = document.createElement('input');
+        paidInput.type = 'hidden';
+        paidInput.name = 'Sale.PaidAmount';
+        paidInput.value = document.getElementById('paidAmount').value || '0';
+        container.appendChild(paidInput);
+
+        return true;
     }
 
     // Allow Enter key to add product

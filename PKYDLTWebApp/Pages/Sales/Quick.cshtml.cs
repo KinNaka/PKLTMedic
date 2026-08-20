@@ -21,6 +21,7 @@ namespace PKYDLTWebApp.Pages.Sales
         [BindProperty]
         public Sale Sale { get; set; } = new();
 
+        [BindProperty]
         public List<SaleDetail> SaleDetails { get; set; } = new();
         public List<Product> Products { get; set; } = new();
         public List<Customer> Customers { get; set; } = new();
@@ -51,23 +52,68 @@ namespace PKYDLTWebApp.Pages.Sales
         {
             if (!ModelState.IsValid)
             {
+                await LoadDataAsync();
                 return Page();
             }
 
-            if (SaleDetails == null || !SaleDetails.Any())
+            if (Sale.SaleDate < new DateTime(2000, 1, 1))
             {
-                ModelState.AddModelError("", "Vui lòng thêm sản phẩm");
+                Sale.SaleDate = DateTime.Now;
+            }
+
+            // Nhóm par produit pour éviter les doublons
+            var validDetails = SaleDetails?
+                .Where(d => d.ProductId > 0 && d.Quantity > 0)
+                .GroupBy(d => d.ProductId)
+                .Select(g => g.First())
+                .ToList() ?? new List<SaleDetail>();
+
+            if (!validDetails.Any())
+            {
+                ModelState.AddModelError("", "Vui lòng thêm sản phẩm để bán");
+                await LoadDataAsync();
                 return Page();
             }
+
+            // Vérifie la disponibilité du stock pour chaque produit
+            foreach (var detail in validDetails)
+            {
+                var inventory = await _context.Inventories
+                    .FirstOrDefaultAsync(i => i.ProductId == detail.ProductId);
+
+                int available = inventory?.Quantity ?? 0;
+
+                if (available < detail.Quantity)
+                {
+                    var product = await _context.Products.FindAsync(detail.ProductId);
+                    ModelState.AddModelError("",
+                        $"Kho không đủ cho '{product?.ProductName ?? "?"}' (tồn: {available}, cần: {detail.Quantity})");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                await LoadDataAsync();
+                return Page();
+            }
+
+            var userId = await GetCurrentUserIdAsync();
 
             Sale.CreatedAt = DateTime.Now;
-            Sale.SaleDetails = SaleDetails;
+            Sale.CreatedByUserId = userId;
+            Sale.SalesPersonUserId = userId;
+            Sale.SaleDate = DateTime.Now;
+            Sale.Status = "Hoàn thành";
+            Sale.SaleDetails = validDetails;
             Sale.CalculateTotal();
+            Sale.PaymentStatus = (Sale.PaidAmount >= Sale.TotalAmount && Sale.TotalAmount > 0)
+                ? "Đã thanh toán"
+                : (Sale.PaidAmount > 0 ? "Một phần" : "Chưa thanh toán");
 
             _context.Sales.Add(Sale);
 
-            // Cập nhật tồn kho
-            foreach (var detail in SaleDetails)
+            // ============ TRẺ KHO (déduire le stock) ============
+            foreach (var detail in validDetails)
             {
                 var inventory = await _context.Inventories
                     .FirstOrDefaultAsync(i => i.ProductId == detail.ProductId);
@@ -76,24 +122,43 @@ namespace PKYDLTWebApp.Pages.Sales
                 {
                     inventory.Quantity -= detail.Quantity;
                     inventory.LastIssuedDate = DateTime.Now;
+                    inventory.UpdatedAt = DateTime.Now;
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            // Tạo hóa đơn tự động
+            // ============ LƯU HÓA ĐƠN (créer la facture) ============
             var invoice = new Invoice
             {
                 SaleId = Sale.Id,
-                InvoiceNumber = $"HĐ{DateTime.Now:yyMMddHHmm}",
+                InvoiceNumber = await GenerateInvoiceNumberAsync(),
                 InvoiceDate = DateTime.Now,
-                InvoiceType = "Chứng từ tự in"
+                InvoiceType = "Chứng từ tự in",
+                CreatedByUserId = userId,
+                Status = "Đã in",
+                PrintCount = 1,
+                LastPrintedDate = DateTime.Now
             };
+
+            var saleRef = await _context.Sales
+                .Include(s => s.Customer)
+                .FirstOrDefaultAsync(s => s.Id == Sale.Id);
+
+            if (saleRef != null)
+            {
+                invoice.Sale = saleRef;
+            }
+            if (string.IsNullOrWhiteSpace(invoice.CustomerName))
+            {
+                invoice.CustomerName = Sale.Customer?.FullName ?? "Khách lẻ";
+            }
             invoice.SyncFromSale();
+
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Ghi nhận bán hàng thành công. Đơn bán: " + Sale.SaleCode;
+            TempData["Success"] = "Ghi nhận bán hàng + lưu hóa đơn + trừ kho thành công. Đơn bán: " + Sale.SaleCode;
             return RedirectToPage("Index");
         }
 
@@ -103,12 +168,61 @@ namespace PKYDLTWebApp.Pages.Sales
             if (product == null)
                 return new JsonResult(new { error = "Sản phẩm không tồn tại" });
 
+            var inventory = await _context.Inventories
+                .FirstOrDefaultAsync(i => i.ProductId == productId);
+
             return new JsonResult(new
             {
                 productName = product.ProductName,
                 unitPrice = product.RetailPrice,
-                unit = product.Unit
+                unit = product.Unit,
+                stock = inventory?.Quantity ?? 0
             });
+        }
+
+        // ============ HELPERS ============
+
+        private async Task LoadDataAsync()
+        {
+            Products = await _context.Products
+                .Where(p => p.IsActive)
+                .OrderBy(p => p.ProductName)
+                .ToListAsync();
+
+            Customers = await _context.Customers
+                .OrderBy(c => c.FullName)
+                .ToListAsync();
+        }
+
+        private async Task<int?> GetCurrentUserIdAsync()
+        {
+            if (User.Identity == null || string.IsNullOrWhiteSpace(User.Identity.Name))
+                return null;
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == User.Identity.Name);
+
+            return user?.Id;
+        }
+
+        private async Task<string> GenerateInvoiceNumberAsync()
+        {
+            var last = await _context.Invoices
+                .OrderByDescending(i => i.Id)
+                .Select(i => i.InvoiceNumber)
+                .FirstOrDefaultAsync();
+
+            int num = 1;
+            if (!string.IsNullOrEmpty(last))
+            {
+                var parts = last.Split('/');
+                if (parts.Length >= 1 && int.TryParse(parts[^1], out int parsed))
+                {
+                    num = parsed + 1;
+                }
+            }
+
+            return $"HĐ/{DateTime.Now:yyyyMM}/{num:D5}";
         }
     }
 }
