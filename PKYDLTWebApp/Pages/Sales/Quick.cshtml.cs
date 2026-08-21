@@ -34,6 +34,16 @@ namespace PKYDLTWebApp.Pages.Sales
         public Sale? PrintSale { get; set; }
         public string? PrintFormat { get; set; }
 
+        /// <summary>Đơn bán gốc (Sao chép): điền sẵn khách hàng + sản phẩm + số lượng</summary>
+        [BindProperty(SupportsGet = true)]
+        public int? CopySaleId { get; set; }
+
+        /// <summary>Đơn bán gốc hiển thị nhanh trường khi sao chép</summary>
+        public string? CopySourceCode { get; set; }
+
+        /// <summary>JSON data for cart items khi sao chép (khách hàng + sản phẩm + số lượng)</summary>
+        public string CopyDetailsJson { get; set; } = "[]";
+
         /// <summary>JSON data for customer/product autocomplete (built server-side)</summary>
         public string CustomersJson { get; set; } = "[]";
         public string ProductsJson { get; set; } = "[]";
@@ -74,6 +84,12 @@ namespace PKYDLTWebApp.Pages.Sales
             Sale.SaleCode = $"SALE-{DateTime.Now:yyyyMMdd}-{saleNumber.ToString("D4")}";
             Sale.SaleDate = DateTime.Now;
             Sale.PaymentMethod = "Tiền mặt";
+
+            // ============ SAO CHÉP (kích hoạt) ============
+            if (CopySaleId.HasValue)
+            {
+                await LoadCopyDataAsync();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -240,6 +256,47 @@ namespace PKYDLTWebApp.Pages.Sales
                 Customers.Select(c => new { c.Id, Name = c.FullName, Phone = c.Phone ?? "" }).ToList());
             ProductsJson = System.Text.Json.JsonSerializer.Serialize(
                 Products.Select(p => new { p.Id, Code = p.ProductCode, Name = p.ProductName, Price = p.RetailPrice, Unit = p.Unit }).ToList());
+        }
+
+        /// <summary>
+        /// Sao chép: nạp đơn bán gốc và điền sẵn khách hàng + sản phẩm + số lượng
+        /// cùng loại hàng cùng số lượng như đơn gốc
+        /// </summary>
+        private async Task LoadCopyDataAsync()
+        {
+            if (!CopySaleId.HasValue)
+            {
+                return;
+            }
+
+            var source = await _context.Sales
+                .Include(s => s.Customer)
+                .Include(s => s.SaleDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefaultAsync(s => s.Id == CopySaleId.Value);
+
+            if (source == null)
+            {
+                return;
+            }
+
+            CopySourceCode = source.SaleCode;
+            Sale.CustomerId = source.CustomerId;
+
+            var items = source.SaleDetails
+                .Where(d => d.ProductId > 0 && d.Quantity > 0)
+                .Select(d => new
+                {
+                    productId = d.ProductId,
+                    productName = d.Product?.ProductName ?? "",
+                    unitPrice = d.UnitPrice,
+                    unit = d.Product?.Unit ?? "",
+                    quantity = d.Quantity,
+                    notes = d.Notes ?? ""
+                })
+                .ToList();
+
+            CopyDetailsJson = System.Text.Json.JsonSerializer.Serialize(items);
         }
 
         private async Task LoadPrintDataAsync(int saleId)

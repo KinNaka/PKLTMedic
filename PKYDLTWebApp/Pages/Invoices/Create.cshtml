@@ -1,0 +1,84 @@
+@page
+@model PKYDLTWebApp.Pages.Invoices.CreateModel
+@{
+    ViewData["Title"] = "Tạo Hóa Đơn";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🧾 Tạo Hóa Đơn</h2>
+            <p class="text-muted">Tạo hóa đơn từ một đơn bán hàng đã có</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a class="btn btn-outline-secondary" asp-page="Index">← Danh sách</a>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-light"><h5 class="mb-0">📄 Thông tin hóa đơn</h5></div>
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label" asp-for="SaleId"></label>
+                        <select asp-for="SaleId" class="form-select">
+                            <option value="">-- Chọn đơn bán hàng --</option>
+                            @foreach (var s in Model.Sales)
+                            {
+                                <option value="@s.Id">
+                                    @s.SaleCode — Ngày @s.SaleDate.ToString("dd/MM/yyyy") — @(s.Customer?.FullName ?? "Khách lẻ") — @s.TotalAmount.ToString("#,##0") đ
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="InvoiceNumber">Số hóa đơn</label>
+                        <input asp-for="InvoiceNumber" class="form-control" />
+                        <span asp-validation-for="InvoiceNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="InvoiceDate">Ngày lập hóa đơn</label>
+                        <input asp-for="InvoiceDate" type="date" class="form-control" />
+                        <span asp-validation-for="InvoiceDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="InvoiceType">Loại hóa đơn</label>
+                        <input asp-for="InvoiceType" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Status">Trạng thái</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Chưa in">Chưa in</option>
+                            <option value="Đã in">Đã in</option>
+                            <option value="Huỷ">Huỷ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="PaymentNote">Ghi chú thanh toán</label>
+                        <input asp-for="PaymentNote" class="form-control" placeholder="VD: tiền mặt, chuyển khoản..." />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" asp-for="Notes">Ghi chú</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a class="btn btn-outline-secondary" asp-page="Index">Hủy</a>
+                    <button type="submit" class="btn btn-primary">💾 Lưu hóa đơn</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

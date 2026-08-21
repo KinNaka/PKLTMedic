@@ -37,6 +37,7 @@
                                 <th style="width: 12%">Đã trả</th>
                                 <th style="width: 12%">Còn lại</th>
                                 <th style="width: 11%" class="text-center">Trạng thái</th>
+                                <th style="width: 14%" class="text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,6 +81,12 @@
                                         {
                                             <span class="badge bg-secondary">@sale.PaymentStatus</span>
                                         }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a class="btn btn-outline-success" asp-page="Quick" asp-route-copySaleId="@sale.Id"
+                                               title="Bán hàng nhanh cùng khách hàng, cùng sản phẩm, cùng số lượng">⚡ Sao chép</a>
+                                        </div>
                                     </td>
                                 </tr>
                             }

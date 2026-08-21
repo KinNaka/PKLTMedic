@@ -11,12 +11,52 @@
             <h2 class="mb-2">🧾 Hóa đơn</h2>
             <p class="text-muted">Xem và quản lý các hóa đơn bán hàng</p>
         </div>
+        <div class="col-md-4 text-md-end">
+            <a href="/Sales/Index" class="btn btn-outline-secondary">🛒 Bán hàng</a>
+            <a href="/Invoices/Create" class="btn btn-primary">➕ Hóa đơn mới</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <!-- Search + Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="searchTerm" class="form-control"
+                           placeholder="🔍 Tìm theo số HĐ, khách hàng, mã đơn bán, SĐT..." value="@Model.SearchTerm" />
+                </div>
+                <div class="col-md-4">
+                    <select name="statusFilter" class="form-select">
+                        <option value="all">📋 Tất cả trạng thái</option>
+                        @foreach (var s in Model.Statuses)
+                        {
+                            @if (Model.StatusFilter == s)
+                            {
+                                <option value="@s" selected>@s</option>
+                            }
+                            else
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-outline-primary" type="submit">Tìm</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Invoices Table -->
     <div class="card">
         <div class="card-header bg-light">
-            <h5 class="card-title mb-0">📋 Danh sách hóa đơn (100 hóa đơn gần nhất)</h5>
+            <h5 class="card-title mb-0">📋 Danh sách hóa đơn (@Model.Invoices.Count hóa đơn gần nhất)</h5>
         </div>
         <div class="card-body p-0">
             @if (Model.Invoices.Any())
@@ -25,13 +65,14 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th style="width: 15%">Số hóa đơn</th>
-                                <th style="width: 13%">Ngày</th>
-                                <th style="width: 18%">Khách hàng</th>
-                                <th style="width: 12%">Đơn bán</th>
-                                <th style="width: 14%">Tổng tiền</th>
-                                <th style="width: 10%">Lần in</th>
-                                <th style="width: 18%" class="text-center">Trạng thái</th>
+                                <th style="width: 14%">Số hóa đơn</th>
+                                <th style="width: 11%">Ngày</th>
+                                <th style="width: 17%">Khách hàng</th>
+                                <th style="width: 11%">Đơn bán</th>
+                                <th style="width: 12%">Tổng tiền</th>
+                                <th style="width: 8%">Lần in</th>
+                                <th style="width: 10%">Trạng thái</th>
+                                <th style="width: 17%" class="text-center">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,9 +82,13 @@
                                     <td><strong>@inv.InvoiceNumber</strong></td>
                                     <td>@inv.InvoiceDate.ToString("dd/MM/yyyy")</td>
                                     <td>
-                                        @(string.IsNullOrEmpty(inv.CustomerName) 
-                                            ? (inv.Sale?.Customer?.FullName ?? "Khách lẻ") 
+                                        @(string.IsNullOrEmpty(inv.CustomerName)
+                                            ? (inv.Sale?.Customer?.FullName ?? "Khách lẻ")
                                             : inv.CustomerName)
+                                        @if (!string.IsNullOrEmpty(inv.CustomerPhone))
+                                        {
+                                            <br /><small class="text-muted">@inv.CustomerPhone</small>
+                                        }
                                     </td>
                                     <td>
                                         @if (inv.Sale != null)
@@ -57,7 +102,7 @@
                                     </td>
                                     <td><strong>@inv.TotalAmount.ToString("#,##0") đ</strong></td>
                                     <td>@inv.PrintCount</td>
-                                    <td class="text-center">
+                                    <td>
                                         @if (inv.Status == "Huỷ" || inv.Status == "Hủy")
                                         {
                                             <span class="badge bg-danger">❌ Hủy</span>
@@ -66,10 +111,25 @@
                                         {
                                             <span class="badge bg-success">✅ Đã in</span>
                                         }
-                                        else
+                                        else if (inv.Status == "Chưa in")
                                         {
                                             <span class="badge bg-warning">⏳ Chưa in</span>
                                         }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@inv.Status</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a class="btn btn-outline-primary" asp-page="Details" asp-route-id="@inv.Id" title="Xem chi tiết">Xem</a>
+                                            <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-id="@inv.Id" title="Sửa hóa đơn">Sửa</a>
+                                            @if (inv.SaleId > 0)
+                                            {
+                                                <a class="btn btn-outline-success" asp-page="/Sales/Quick" asp-route-copySaleId="@inv.SaleId" title="Bán hàng nhanh cùng khách hàng, cùng sản phẩm, cùng số lượng">⚡ Sao chép</a>
+                                            }
+                                            <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@inv.Id" title="Xóa hóa đơn">Xóa</a>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -82,6 +142,7 @@
                 <div class="text-center p-5">
                     <p class="fs-5">📭 Chưa có hóa đơn nào</p>
                     <p class="text-muted">Hóa đơn sẽ được tạo tự động khi có đơn bán hàng</p>
+                    <a href="/Invoices/Create" class="btn btn-primary">➕ Tạo hóa đơn đầu tiên</a>
                 </div>
             }
         </div>

@@ -1,0 +1,45 @@
+@page
+@model PKYDLTWebApp.Pages.Invoices.DeleteModel
+@{
+    ViewData["Title"] = "Xóa Hóa Đơn";
+    var inv = Model.Invoice!;
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🗑️ Xóa Hóa Đơn</h2>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a class="btn btn-outline-secondary" asp-page="Index">← Danh sách</a>
+        </div>
+    </div>
+
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">⚠️ This action cannot be undone</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <h6>Are you sure you want to delete this invoice?</h6>
+                <div class="row">
+                    <div class="col-md-4"><strong>Số hóa đơn:</strong> @inv.InvoiceNumber</div>
+                    <div class="col-md-4"><strong>Ngày:</strong> @inv.InvoiceDate.ToString("dd/MM/yyyy")</div>
+                    <div class="col-md-4"><strong>Khách:</strong> @(string.IsNullOrEmpty(inv.CustomerName) ? (inv.Sale?.Customer?.FullName ?? "Khách lẻ") : inv.CustomerName)</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-4"><strong>Đơn bán:</strong> @(inv.Sale?.SaleCode ?? "—")</div>
+                    <div class="col-md-4"><strong>Tổng tiền:</strong> @inv.TotalAmount.ToString("#,##0") đ</div>
+                    <div class="col-md-4"><strong>Status:</strong> @inv.Status</div>
+                </div>
+            </div>
+            <p class="text-muted">Deleting this invoice removes only the invoice record. The related sale and its stock are not affected.</p>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary flex-fill" asp-page="Index">Hủy</a>
+                <form method="post" class="flex-fill">
+                    <button type="submit" class="btn btn-danger w-100">🗑️ Xóa hóa đơn</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

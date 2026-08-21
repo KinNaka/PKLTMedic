@@ -122,6 +122,13 @@
                 </div>
                 <div class="card-body">
                     <form method="post" id="saleForm">
+                        @if (Model.CopySourceCode != null)
+                        {
+                            <div class="alert alert-success py-2 mb-2">
+                                ⚡ <strong>Sao chép từ đơn bán:</strong> @Model.CopySourceCode —
+                                Khách hàng, sản phẩm và số lượng đã điền sẵn. Bạn có thể chỉnh sửa trước khi lưu.
+                            </div>
+                        }
 <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Mã ghi nhận:</label>
@@ -320,6 +327,10 @@
     {
         <input type="hidden" id="customersData" value="@Model.CustomersJson" />
         <input type="hidden" id="productsData" value="@Model.ProductsJson" />
+        @if (Model.CopySourceCode != null)
+        {
+            <input type="hidden" id="copyDetailsData" value="@Model.CopyDetailsJson" />
+        }
     }
 
 <!-- Autocomplete styles -->
@@ -621,6 +632,40 @@ function prepareHiddenDetails() {
         document.getElementById('printOptionHidden').value = selected ? selected.value : 'none';
         document.getElementById('saleForm').submit();
     }
+
+    // ============ SAO CHÉP BÁN HÀNG (pre-fill cart & customer) ============
+    function applyCopyData() {
+        const copyEl = document.getElementById('copyDetailsData');
+        if (!copyEl) return;
+        let items = [];
+        try { items = JSON.parse(copyEl.value) || []; } catch (e) { items = []; }
+        if (!items.length) return;
+
+        items.forEach(item => {
+            cartItems.push({
+                productId: item.productId,
+                productName: item.productName,
+                unitPrice: item.unitPrice,
+                unit: item.unit || '',
+                quantity: parseInt(item.quantity) || 1,
+                notes: item.notes || ''
+            });
+        });
+
+        // Điền sẵn khách hàng đã có trên server (Sale.CustomerId)
+        const custId = customerIdHidden ? customerIdHidden.value : '';
+        const cust = custId ? CUSTOMERS.find(c => String(c.Id) === String(custId)) : null;
+        if (cust && customerInput) {
+            customerInput.value = cust.Phone ? cust.Name + ' (' + cust.Phone + ')' : cust.Name;
+            const selText = document.getElementById('customerSelectedText');
+            if (selText) selText.textContent = cust.Phone ? cust.Name + ' · ' + cust.Phone : cust.Name;
+        }
+
+        paidManual = false;
+        renderTable();
+        calculateTotal();
+    }
+    applyCopyData();
 
     document.getElementById('quantityInput')?.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {

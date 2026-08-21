@@ -1,0 +1,209 @@
+@page
+@model PKYDLTWebApp.Pages.Invoices.DetailsModel
+@{
+    ViewData["Title"] = "Chi Tiết Hóa Đơn";
+    var inv = Model.Invoice!;
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">🧾 Hóa Đơn: @inv.InvoiceNumber</h2>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a class="btn btn-outline-secondary" asp-page="Index">← Danh sách</a>
+            <a class="btn btn-outline-primary" asp-page="Edit" asp-route-id="@inv.Id">✏️ Sửa</a>
+            @if (inv.Sale != null)
+            {
+                <a class="btn btn-outline-success" asp-page="/Sales/Quick" asp-route-copySaleId="@inv.SaleId">⚡ Sao chép</a>
+            }
+            <a class="btn btn-outline-danger" asp-page="Delete" asp-route-id="@inv.Id">🗑️ Xóa</a>
+        </div>
+    </div>
+
+    <!-- Invoice info -->
+    <div class="card mb-4">
+        <div class="card-header bg-light"><h5 class="mb-0">📄 Thông tin hóa đơn</h5></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <small class="text-muted">Số hóa đơn</small>
+                    <div><strong>@inv.InvoiceNumber</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Ngày lập</small>
+                    <div><strong>@inv.InvoiceDate.ToString("dd/MM/yyyy HH:mm")</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Loại hóa đơn</small>
+                    <div><strong>@inv.InvoiceType</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Trạng thái</small>
+                    <div>
+                        @if (inv.Status == "Huỷ" || inv.Status == "Hủy")
+                        {
+                            <span class="badge bg-danger">❌ Hủy</span>
+                        }
+                        else if (inv.Status == "Đã in")
+                        {
+                            <span class="badge bg-success">✅ Đã in</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">⏳ Chưa in</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-3">
+                    <small class="text-muted">Số lần in</small>
+                    <div><strong>@inv.PrintCount</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">In lần cuối</small>
+                    <div><strong>@(inv.LastPrintedDate?.ToString("dd/MM/yyyy HH:mm") ?? "—")</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Người tạo</small>
+                    <div><strong>@(inv.CreatedByUser?.FullName ?? "—")</strong></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Ngày tạo</small>
+                    <div><strong>@inv.CreatedAt.ToString("dd/MM/yyyy HH:mm")</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (inv.Sale != null)
+    {
+        var sale = inv.Sale;
+        <!-- Sale info -->
+        <div class="card mb-4">
+            <div class="card-header bg-light"><h5 class="mb-0">🛒 Đơn bán liên quan</h5></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <small class="text-muted">Mã đơn bán</small>
+                        <div><strong>@sale.SaleCode</strong></div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Ngày bán</small>
+                        <div><strong>@sale.SaleDate.ToString("dd/MM/yyyy HH:mm")</strong></div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Khách hàng</small>
+                        <div><strong>@(sale.Customer?.FullName ?? inv.CustomerName ?? "Khách lẻ")</strong></div>
+                    </div>
+                    <div class="col-md-3">
+                        <small class="text-muted">Trạng thái đơn</small>
+                        <div><span class="badge bg-secondary">@sale.Status</span></div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(inv.CustomerPhone))
+                {
+                    <hr />
+                    <div><small class="text-muted">SĐT khách:</small> @inv.CustomerPhone</div>
+                }
+            </div>
+        </div>
+
+        <!-- Sale details table -->
+        <div class="card">
+            <div class="card-header bg-light"><h5 class="mb-0">💊 Chi tiết sản phẩm</h5></div>
+            <div class="card-body p-0">
+                @if (sale.SaleDetails.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Mã SP</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ var i = 1; }
+                                @foreach (var d in sale.SaleDetails)
+                                {
+                                    var lineTotal = d.Quantity * d.UnitPrice;
+                                    <tr>
+                                        <td>@(i++)</td>
+                                        <td>@(d.Product?.ProductCode ?? "—")</td>
+                                        <td>
+                                            @(d.Product?.ProductName ?? "—")
+                                            @if (!string.IsNullOrEmpty(d.Notes))
+                                            {
+                                                <br /><small class="text-muted">@d.Notes</small>
+                                            }
+                                        </td>
+                                        <td class="text-center">@d.Quantity @(d.Product?.Unit ?? "")</td>
+                                        <td class="text-end">@d.UnitPrice.ToString("#,##0") đ</td>
+                                        <td class="text-end"><strong>@lineTotal.ToString("#,##0") đ</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5"><p class="text-muted">📭 Không có chi tiết</p></div>
+                }
+            </div>
+        </div>
+    }
+    <!-- Financial summary -->
+    <div class="card mt-4">
+        <div class="card-header bg-light"><h5 class="mb-0">💰 Tổng kết tài chính</h5></div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <small class="text-muted">Tổng tiền hàng</small>
+                    <div><h5>@inv.SubTotal.ToString("#,##0") đ</h5></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Chiết khấu</small>
+                    <div><h5 class="text-danger">-@inv.DiscountAmount.ToString("#,##0") đ</h5></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Tiền thuế VAT</small>
+                    <div><h5>+@inv.VATAmount.ToString("#,##0") đ</h5></div>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Tổng phải trả</small>
+                    <div><h5 class="text-primary">@inv.TotalAmount.ToString("#,##0") đ</h5></div>
+                </div>
+            </div>
+            <hr />
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <small class="text-muted">Đã trả</small>
+                    <div><h5 class="text-success">@inv.PaidAmount.ToString("#,##0") đ</h5></div>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Phương thức/Ghi chú TT</small>
+                    <div><h6>@(inv.PaymentNote ?? "—")</h6></div>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Còn lại</small>
+                    <div><h5 class="@(inv.TotalAmount - inv.PaidAmount > 0 ? "text-danger" : "text-success")">@((inv.TotalAmount - inv.PaidAmount).ToString("#,##0")) đ</h5></div>
+                </div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(inv.Notes))
+            {
+                <hr />
+                <div>
+                    <small class="text-muted">Ghi chú</small>
+                    <div>@inv.Notes</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

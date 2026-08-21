@@ -1,0 +1,107 @@
+@page
+@model PKYDLTWebApp.Pages.Invoices.EditModel
+@{
+    ViewData["Title"] = "Sửa Hóa Đơn";
+    var inv = Model.Invoice;
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-2">✏️ Sửa Hóa Đơn: @inv.InvoiceNumber</h2>
+            <p class="text-muted">Cập nhật thông tin hóa đơn (đơn bán hàng không thay đổi)</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a class="btn btn-outline-secondary" asp-page="Index">← Danh sách</a>
+            <a class="btn btn-outline-primary" asp-page="Details" asp-route-id="@inv.Id">Xem chi tiết</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-light"><h5 class="mb-0">📄 Thông tin hóa đơn</h5></div>
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" asp-for="Invoice.Id" />
+                <input type="hidden" asp-for="Invoice.SaleId" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="alert alert-light border d-flex justify-content-between align-items-center">
+                    <span><strong>Đơn bán:</strong> @(inv.Sale?.SaleCode ?? "—")</span>
+                    <span><strong>Tổng tiền hàng (từ đơn bán):</strong> @inv.SubTotal.ToString("#,##0") đ</span>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.InvoiceNumber">Số hóa đơn</label>
+                        <input asp-for="Invoice.InvoiceNumber" class="form-control" />
+                        <span asp-validation-for="Invoice.InvoiceNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.InvoiceDate">Ngày lập hóa đơn</label>
+                        <input asp-for="Invoice.InvoiceDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.InvoiceType">Loại hóa đơn</label>
+                        <input asp-for="Invoice.InvoiceType" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="Invoice.CustomerName">Tên khách hàng</label>
+                        <input asp-for="Invoice.CustomerName" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="Invoice.CustomerPhone">Số điện thoại</label>
+                        <input asp-for="Invoice.CustomerPhone" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="Invoice.CustomerAddress">Địa chỉ</label>
+                        <input asp-for="Invoice.CustomerAddress" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" asp-for="Invoice.CustomerEmail">Email</label>
+                        <input asp-for="Invoice.CustomerEmail" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.DiscountAmount">Chiết khấu (đ)</label>
+                        <input asp-for="Invoice.DiscountAmount" type="number" step="1000" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.VATAmount">Tiền thuế VAT (đ)</label>
+                        <input asp-for="Invoice.VATAmount" type="number" step="1000" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.PaidAmount">Số tiền đã trả (đ)</label>
+                        <input asp-for="Invoice.PaidAmount" type="number" step="1000" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" asp-for="Invoice.Status">Trạng thái</label>
+                        <select asp-for="Invoice.Status" class="form-select">
+                            <option value="Chưa in">Chưa in</option>
+                            <option value="Đã in">Đã in</option>
+                            <option value="Huỷ">Huỷ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label" asp-for="Invoice.PaymentNote">Ghi chú thanh toán</label>
+                        <input asp-for="Invoice.PaymentNote" class="form-control" />
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" asp-for="Invoice.Notes">Ghi chú</label>
+                        <textarea asp-for="Invoice.Notes" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a class="btn btn-outline-secondary" asp-page="Index">Hủy</a>
+                    <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
