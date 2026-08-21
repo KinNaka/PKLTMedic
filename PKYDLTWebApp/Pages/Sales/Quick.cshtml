@@ -129,15 +129,13 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Khách hàng:</label>
-                                <input type="text" id="customerSearch" class="form-control form-control-sm mb-1"
-                                       placeholder="Nhập tên/điện thoại để tìm..." oninput="filterOptions('customerSearch','customerSelect')" />
-                                <select asp-for="Sale.CustomerId" class="form-select" id="customerSelect">
-                                    <option value="">-- Khách lẻ --</option>
-                                    @foreach (var customer in Model.Customers)
-                                    {
-                                        <option value="@customer.Id">@customer.FullName (@customer.Phone)</option>
-                                    }
-                                </select>
+                                <div class="position-relative autocomplete-wrap">
+                                    <input type="text" id="customerSearch" class="form-control form-control-sm"
+                                           placeholder="Type to search customer..." autocomplete="off" />
+                                    <input type="hidden" id="customerIdHidden" asp-for="Sale.CustomerId" />
+                                    <ul id="customerDropdown" class="autocomplete-menu"></ul>
+                                </div>
+                                <div class="form-text" id="customerSelectedText">-- Khách lẻ --</div>
                             </div>
                         </div>
 
@@ -150,17 +148,11 @@
                                 <div class="row g-2">
                                     <div class="col-md-5">
                                         <label class="form-label">Sản phẩm:</label>
-                                        <input type="text" id="productSearch" class="form-control form-control-sm mb-1"
-                                               placeholder="Nhập mã/tên sản phẩm để tìm..." oninput="filterOptions('productSearch','productSelect')" />
-                                        <select id="productSelect" class="form-select">
-                                            <option value="">-- Chọn sản phẩm --</option>
-                                            @foreach (var product in Model.Products)
-                                            {
-                                                <option value="@product.Id" data-price="@product.RetailPrice" data-unit="@product.Unit">
-                                                    @product.ProductCode - @product.ProductName (@product.Unit)
-                                                </option>
-                                            }
-                                        </select>
+                                        <div class="position-relative autocomplete-wrap">
+                                            <input type="text" id="productSearch" class="form-control form-control-sm"
+                                                   placeholder="Type to search product..." autocomplete="off" />
+                                            <ul id="productDropdown" class="autocomplete-menu"></ul>
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">Số lượng:</label>
@@ -215,7 +207,7 @@
                                         </div>
                                         <hr />
                                         <div class="row">
-                                            <div class="col-6"><h5>Total to pay:</h5></div>
+                                            <div class="col-6"><h5>Thành tiền</h5></div>
                                             <div class="col-6 text-end"><h5 id="totalAmount" class="text-primary">0đ</h5></div>
                                         </div>
                                     </div>
@@ -227,25 +219,25 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header bg-light">
-                                        <h6 class="mb-0">Thanh toan</h6>
+                                        <h6 class="mb-0">Thanh toán</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <label asp-for="Sale.PaymentMethod" class="form-label">Payment method</label>
+                                                <label asp-for="Sale.PaymentMethod" class="form-label">Phương thức thanh toán</label>
                                                 <select asp-for="Sale.PaymentMethod" class="form-select">
-                                                    <option value="Tiền mặt">Cash</option>
-                                                    <option value="Chuyển khoản">Bank transfer</option>
+                                                    <option value="Tiền mặt">Tiền mặt</option>
+                                                    <option value="Chuyển khoản">Chuyển khoản</option>
                                                     <option value="QR Code">QR Code</option>
-                                                    <option value="Nợ">Debt</option>
+                                                    <option value="Nợ">Nợ</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label">Khach paid:</label>
+                                                <label class="form-label">Khách trả:</label>
                                                 <input type="number" id="paidAmount" class="form-control" value="0" onchange="calculateChange()" />
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label">Change:</label>
+                                                <label class="form-label">Thối lại:</label>
                                                 <input type="number" id="change" class="form-control" readonly />
                                             </div>
                                         </div>
@@ -259,9 +251,9 @@
 
                         <!-- Action buttons -->
                         <div class="mt-4 d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="/Sales/Index" class="btn btn-secondary">Back</a>
+                            <a href="/Sales/Index" class="btn btn-secondary">Trờ về</a>
                             <button type="submit" class="btn btn-success btn-lg" onclick="return preparePrintModal()">
-                                Save sale and pay
+                                Lưu và thanh toán
                             </button>
                         </div>
                     </form>
@@ -270,31 +262,31 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">Print invoice / receipt</h5>
+                                    <h5 class="modal-title">In</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p class="text-muted mb-2">Choose what to print after saving:</p>
+                                    <p class="text-muted mb-2">Chọn loại in</p>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="salePrintOption" id="poFull" value="invoice" checked>
-                                        <label class="form-check-label" for="poFull">Invoice (with product names)</label>
+                                        <label class="form-check-label" for="poFull">Hóa đơn kèm tên SP</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="salePrintOption" id="poNoname" value="invoice_noname">
-                                        <label class="form-check-label" for="poNoname">Invoice (without product names)</label>
+                                        <label class="form-check-label" for="poNoname">Hóa đơn không kèm tên SP</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="salePrintOption" id="poDrug" value="drug">
-                                        <label class="form-check-label" for="poDrug">Prescription / drug receipt only</label>
+                                        <label class="form-check-label" for="poDrug">Toa thuốc</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="salePrintOption" id="poNone" value="none">
-                                        <label class="form-check-label" for="poNone">No print (record only)</label>
+                                        <label class="form-check-label" for="poNone">Không in (Chỉ lưu)</label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-success" onclick="confirmPrintSale()">Save & Print</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                    <button type="button" class="btn btn-success" onclick="confirmPrintSale()">Lưu và in</button>
                                 </div>
                             </div>
                         </div>
@@ -311,10 +303,10 @@
                 <div class="card-body">
                     <div class="alert alert-info">
                         <ul class="mb-0">
-                            <li>Type to search customer / product</li>
-                            <li>Set quantity, optional note, press Add</li>
-                            <li>Enter the paid amount</li>
-                            <li>Press Save sale and pay to choose print</li>
+                            <li>Nhập để tìm khách hàng, sản phẩm</li>
+                            <li>Chọn số lượng, ghi chú bấm thêm</li>
+                            <li>nhập số tiền khách đưa</li>
+                            <li>Bấm lưu và chọn in</li>
                         </ul>
                     </div>
                 </div>
@@ -323,50 +315,209 @@
     </div>
     }
 </div>
+<!-- Autocomplete data (server-built JSON, parsed client-side) -->
+    @if (Model.PrintSale == null)
+    {
+        <input type="hidden" id="customersData" value="@Model.CustomersJson" />
+        <input type="hidden" id="productsData" value="@Model.ProductsJson" />
+    }
+
+<!-- Autocomplete styles -->
+<style>
+    .autocomplete-wrap { position: relative; }
+    .autocomplete-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1050;
+        display: none;
+        max-height: 240px;
+        overflow-y: auto;
+        margin: 2px 0 0 0;
+        padding: 0;
+        list-style: none;
+        background: #fff;
+        border: 1px solid #ced4da;
+        border-radius: .375rem;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    }
+    .autocomplete-menu.show { display: block; }
+    .autocomplete-item { padding: .45rem .75rem; cursor: pointer; font-size: .9rem; }
+    .autocomplete-item:hover, .autocomplete-item.active { background: #e9ecef; }
+    .autocomplete-empty { padding: .45rem .75rem; color: #6c757d; font-size: .9rem; }
+</style>
+
 <!-- JavaScript -->
 <script>
     let cartItems = [];
 
-    function filterOptions(inputId, selectId) {
-        const input = document.getElementById(inputId);
-        const txt = (input ? input.value : '').trim().toLowerCase();
-        const sel = document.getElementById(selectId);
-        if (!sel) return;
-        for (let i = 0; i < sel.options.length; i++) {
-            const opt = sel.options[i];
-            if (opt.value === '') { opt.hidden = false; continue; }
-            opt.hidden = txt !== '' && opt.text.toLowerCase().indexOf(txt) === -1;
+    // Inline data from the server for autocomplete (parsed from hidden fields)
+    const customersEl = document.getElementById('customersData');
+    const productsEl = document.getElementById('productsData');
+    const CUSTOMERS = customersEl ? JSON.parse(customersEl.value) : [];
+    const PRODUCTS = productsEl ? JSON.parse(productsEl.value) : [];
+
+    let selectedProduct = null;
+    let paidManual = false;
+
+    function debounce(fn, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function closeAllAutocompletes() {
+        document.querySelectorAll('.autocomplete-menu').forEach(m => m.classList.remove('show'));
+    }
+
+    // Close on click outside the autocomplete wrappers
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.autocomplete-wrap')) closeAllAutocompletes();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAllAutocompletes();
+    });
+
+    // ============ CUSTOMER AUTOCOMPLETE ============
+    const customerInput = document.getElementById('customerSearch');
+    const customerDropdown = document.getElementById('customerDropdown');
+    const customerIdHidden = document.getElementById('customerIdHidden');
+
+    function renderCustomers(rawKeyword) {
+        const kw = (rawKeyword || '').replace(/\s+/g, ' ').trim().toLowerCase();
+        let results = kw
+            ? CUSTOMERS.filter(c => c.Name.toLowerCase().includes(kw) || c.Phone.toLowerCase().includes(kw))
+            : CUSTOMERS;
+
+        if (results.length === 0) {
+            customerDropdown.innerHTML = '<li class="autocomplete-empty">No matching customer</li>';
+        } else {
+            customerDropdown.innerHTML = results.slice(0, 50).map(c =>
+                `<li class="autocomplete-item" data-id="${c.Id}" data-name="${esc(c.Name)}" data-phone="${esc(c.Phone)}">` +
+                `${esc(c.Name)}${c.Phone ? ' <small>· ' + esc(c.Phone) + '</small>' : ''}</li>`
+            ).join('');
         }
+        customerDropdown.classList.add('show');
+    }
+
+    function onCustomerSelect(li) {
+        customerIdHidden.value = li.dataset.id;
+        const name = li.dataset.name || '';
+        const phone = li.dataset.phone || '';
+        customerInput.value = phone ? name + ' (' + phone + ')' : name;
+        document.getElementById('customerSelectedText').textContent = phone ? name + ' · ' + phone : name;
+        closeAllAutocompletes();
+    }
+
+    if (customerInput && customerDropdown) {
+        // Debounced (300ms) real-time search on typing
+        customerInput.addEventListener('input', debounce(function () {
+            renderCustomers(customerInput.value);
+        }, 300));
+
+        customerInput.addEventListener('focus', function () {
+            renderCustomers(customerInput.value);
+        });
+
+        customerDropdown.addEventListener('mousedown', function (e) {
+            const li = e.target.closest('.autocomplete-item');
+            if (!li) return;
+            e.preventDefault();
+            onCustomerSelect(li);
+        });
+    }
+
+    // ============ PRODUCT AUTOCOMPLETE ============
+    const productInput = document.getElementById('productSearch');
+    const productDropdown = document.getElementById('productDropdown');
+
+    function renderProducts(rawKeyword) {
+        const kw = (rawKeyword || '').replace(/\s+/g, ' ').trim().toLowerCase();
+        let results = kw
+            ? PRODUCTS.filter(p => p.Name.toLowerCase().includes(kw) || p.Code.toLowerCase().includes(kw))
+            : PRODUCTS;
+
+        if (results.length === 0) {
+            productDropdown.innerHTML = '<li class="autocomplete-empty">No matching product</li>';
+        } else {
+            productDropdown.innerHTML = results.slice(0, 50).map(p =>
+                `<li class="autocomplete-item" data-id="${p.Id}" data-name="${esc(p.Name)}" data-unit="${esc(p.Unit)}" data-price="${p.Price}">` +
+                `${esc(p.Code)} - ${esc(p.Name)} <small>· ${esc(p.Unit)}</small></li>`
+            ).join('');
+        }
+        productDropdown.classList.add('show');
+    }
+
+    function onProductSelect(li) {
+        selectedProduct = {
+            id: parseInt(li.dataset.id),
+            name: li.dataset.name,
+            unit: li.dataset.unit,
+            unitPrice: parseFloat(li.dataset.price)
+        };
+        productInput.value = selectedProduct.name + ' (' + selectedProduct.unit + ')';
+        closeAllAutocompletes();
+    }
+
+    if (productInput && productDropdown) {
+        // Debounced (300ms) real-time search on typing
+        productInput.addEventListener('input', debounce(function () {
+            selectedProduct = null;
+            renderProducts(productInput.value);
+        }, 300));
+
+        productInput.addEventListener('focus', function () {
+            renderProducts(productInput.value);
+        });
+
+        productDropdown.addEventListener('mousedown', function (e) {
+            const li = e.target.closest('.autocomplete-item');
+            if (!li) return;
+            e.preventDefault();
+            onProductSelect(li);
+        });
     }
 
     function addProduct() {
-        const select = document.getElementById('productSelect');
+        if (!selectedProduct) {
+            alert('Please choose a product from the suggestions');
+            return;
+        }
         const quantity = parseInt(document.getElementById('quantityInput').value) || 1;
         const note = document.getElementById('noteInput').value.trim();
 
-        if (!select.value) {
-            alert('Please choose a product first');
-            return;
-        }
-
-        const option = select.options[select.selectedIndex];
-        const productId = parseInt(select.value);
-        const productName = option.text.split(' - ')[1];
-        const unitPrice = parseFloat(option.dataset.price);
-        const unit = option.dataset.unit;
-
-        let item = cartItems.find(x => x.productId === productId);
+        let item = cartItems.find(x => x.productId === selectedProduct.id);
         if (item) {
             item.quantity += quantity;
             if (note) item.notes = note;
         } else {
-            cartItems.push({ productId, productName, unitPrice, unit, quantity, notes: note });
+            cartItems.push({
+                productId: selectedProduct.id,
+                productName: selectedProduct.name,
+                unitPrice: selectedProduct.unitPrice,
+                unit: selectedProduct.unit,
+                quantity,
+                notes: note
+            });
         }
 
         renderTable();
+        paidManual = false;
         calculateTotal();
 
-        select.value = '';
+        selectedProduct = null;
+        productInput.value = '';
         document.getElementById('quantityInput').value = '1';
         document.getElementById('noteInput').value = '';
     }
@@ -374,6 +525,7 @@
     function removeProduct(productId) {
         cartItems = cartItems.filter(x => x.productId !== productId);
         renderTable();
+        paidManual = false;
         calculateTotal();
     }
 function renderTable() {
@@ -397,6 +549,7 @@ function renderTable() {
         const item = cartItems.find(x => x.productId === productId);
         if (item) {
             item.quantity = parseInt(newQuantity) || 1;
+            paidManual = false;
             renderTable();
             calculateTotal();
         }
@@ -415,6 +568,12 @@ function renderTable() {
         document.getElementById('subTotal').textContent = subTotal.toLocaleString('vi-VN') + ' VND';
         document.getElementById('discountAmount').textContent = discountAmount.toLocaleString('vi-VN') + ' VND';
         document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('vi-VN') + ' VND';
+
+        // Auto-fill "Khách trả" with the total (customer pays in full) unless manually overridden
+        const paidEl = document.getElementById('paidAmount');
+        if (paidEl && !paidManual) {
+            paidEl.value = totalAmount;
+        }
         calculateChange();
     }
 
@@ -463,10 +622,15 @@ function prepareHiddenDetails() {
         document.getElementById('saleForm').submit();
     }
 
-    document.getElementById('quantityInput').addEventListener('keypress', function(e) {
+    document.getElementById('quantityInput')?.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             addProduct();
         }
+    });
+
+    // Typing in "Khách trả" marks it as a manual override (auto-fill stops)
+    document.getElementById('paidAmount')?.addEventListener('input', function() {
+        paidManual = true;
     });
 </script>

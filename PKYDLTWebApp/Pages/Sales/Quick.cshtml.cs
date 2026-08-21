@@ -34,6 +34,10 @@ namespace PKYDLTWebApp.Pages.Sales
         public Sale? PrintSale { get; set; }
         public string? PrintFormat { get; set; }
 
+        /// <summary>JSON data for customer/product autocomplete (built server-side)</summary>
+        public string CustomersJson { get; set; } = "[]";
+        public string ProductsJson { get; set; } = "[]";
+
         public async Task OnGetAsync()
         {
             Products = await _context.Products
@@ -44,6 +48,9 @@ namespace PKYDLTWebApp.Pages.Sales
             Customers = await _context.Customers
                 .OrderBy(c => c.FullName)
                 .ToListAsync();
+
+            // Build autocomplete JSON payloads server-side
+            BuildJson();
 
             // ============ IN DOCUMENT (redirect from OnPost) ============
             var printSaleIdText = TempData["PrintSaleId"] as string;
@@ -223,6 +230,16 @@ namespace PKYDLTWebApp.Pages.Sales
             Customers = await _context.Customers
                 .OrderBy(c => c.FullName)
                 .ToListAsync();
+
+            BuildJson();
+        }
+
+        private void BuildJson()
+        {
+            CustomersJson = System.Text.Json.JsonSerializer.Serialize(
+                Customers.Select(c => new { c.Id, Name = c.FullName, Phone = c.Phone ?? "" }).ToList());
+            ProductsJson = System.Text.Json.JsonSerializer.Serialize(
+                Products.Select(p => new { p.Id, Code = p.ProductCode, Name = p.ProductName, Price = p.RetailPrice, Unit = p.Unit }).ToList());
         }
 
         private async Task LoadPrintDataAsync(int saleId)
