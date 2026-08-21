@@ -9,7 +9,7 @@
     <div class="row mb-4">
         <div class="col-md-8">
             <h2 class="mb-2">✏️ Sửa Hóa Đơn: @inv.InvoiceNumber</h2>
-            <p class="text-muted">Cập nhật thông tin hóa đơn (đơn bán hàng không thay đổi)</p>
+            <p class="text-muted">Cập nhật thông tin hóa đơn, thêm/bớt sản phẩm và sửa ghi chú. Kho sẽ tự động điều chỉnh.</p>
         </div>
         <div class="col-md-4 text-md-end">
             <a class="btn btn-outline-secondary" asp-page="Index">← Danh sách</a>
@@ -25,7 +25,7 @@
     <div class="card">
         <div class="card-header bg-light"><h5 class="mb-0">📄 Thông tin hóa đơn</h5></div>
         <div class="card-body">
-            <form method="post">
+            <form method="post" id="invoiceForm">
                 <input type="hidden" asp-for="Invoice.Id" />
                 <input type="hidden" asp-for="Invoice.SaleId" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -92,6 +92,53 @@
                         <textarea asp-for="Invoice.Notes" class="form-control" rows="2"></textarea>
                     </div>
                 </div>
+                <!-- ============ SẢN PHẨM TRONG HÓA ĐƠN ============ -->
+                <div class="card mb-3 mt-4">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">💊 Sản phẩm trong hóa đơn</h6>
+                        <small class="text-muted">Thêm / bớt / sửa số lượng – kho tự điều chỉnh (thêm sản phẩm trừ kho, bớt sản phẩm cộng lại kho)</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Thêm sản phẩm</label>
+                                <select id="productSelect" class="form-select">
+                                    <option value="">-- Chọn sản phẩm --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Số lượng</label>
+                                <input id="qtyInput" type="number" min="1" value="1" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Ghi chú dòng</label>
+                                <input id="noteInput" class="form-control" placeholder="..." />
+                            </div>
+                            <div class="col-md-2 d-grid">
+                                <button type="button" class="btn btn-success" onclick="addProduct()">➕ Thêm</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive mt-2">
+                            <table class="table table-sm table-bordered mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width:26%">Sản phẩm</th>
+                                        <th style="width:14%">Số lượng</th>
+                                        <th style="width:14%">Đơn giá</th>
+                                        <th style="width:30%">Ghi chú</th>
+                                        <th style="width:10%" class="text-end">Thành tiền</th>
+                                        <th class="text-center">Xóa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="linesTable"></tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Thành tiền sản phẩm:</strong> <span id="subTotal">0</span> đ
+                        </div>
+                        <div id="hiddenInputs"></div>
+                    </div>
+                </div>
 
                 <div class="mt-4 text-end">
                     <a class="btn btn-outline-secondary" asp-page="Index">Hủy</a>
@@ -102,6 +149,96 @@
     </div>
 </div>
 
+<textarea id="existingData" class="d-none">@Model.SaleDetailsJson</textarea>
+<textarea id="productData" class="d-none">@Model.ProductsJson</textarea>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        var items = [];
+try { items = JSON.parse(document.getElementById('existingData') ? document.getElementById('existingData').value : '[]') || []; } catch (e) { items = []; }
+
+var products = [];
+try { products = JSON.parse(document.getElementById('productData') ? document.getElementById('productData').value : '[]') || []; } catch (e) { products = []; }
+
+function fillSelect() {
+    const sel = document.getElementById('productSelect');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">-- Chọn sản phẩm --</option>' +
+        products.filter(p => !items.find(i => i.productId === p.id))
+            .map(p => `<option value="${p.id}" data-name="${p.name}" data-price="${p.price}" data-unit="${p.unit}">${p.code} — ${p.name}</option>`)
+            .join('');
+}
+
+function addProduct() {
+    const sel = document.getElementById('productSelect');
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) { alert('Vui lòng chọn sản phẩm'); return; }
+    if (items.find(i => i.productId === parseInt(opt.value))) { alert('Sản phẩm này đã có trong hóa đơn'); return; }
+
+    items.push({
+        id: 0,
+        productId: parseInt(opt.value),
+        name: opt.getAttribute('data-name') || opt.text,
+        code: '',
+        unitPrice: parseFloat(opt.getAttribute('data-price')) || 0,
+        unit: opt.getAttribute('data-unit') || '',
+        quantity: parseInt(document.getElementById('qtyInput').value) || 1,
+        notes: document.getElementById('noteInput').value || '',
+        stock: 0
+    });
+    renderTable(); renderHiddenInputs(); fillSelect(); calculateTotal();
+    document.getElementById('qtyInput').value = '1';
+    document.getElementById('noteInput').value = '';
+}
+
+function updateQty(idx, val) { items[idx].quantity = parseInt(val) || 1; renderTable(); renderHiddenInputs(); }
+function updatePrice(idx, val) { items[idx].unitPrice = parseFloat(val) || 0; renderTable(); renderHiddenInputs(); }
+function updateNote(idx, val) { items[idx].notes = val; renderHiddenInputs(); }
+function removeItem(idx) { items.splice(idx, 1); renderTable(); renderHiddenInputs(); fillSelect(); calculateTotal(); }
+
+function renderTable() {
+    const tbody = document.getElementById('linesTable');
+    if (!tbody) return;
+    if (!items.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Chưa có sản phẩm – dùng danh sách bên trên để thêm sản phẩm</td></tr>';
+        return;
+    }
+    tbody.innerHTML = items.map((it, idx) => {
+        const total = (it.unitPrice * it.quantity);
+        return `
+        <tr>
+            <td><strong>${it.name}</strong><br/><small class="text-muted">Kho: ${it.stock} ${it.unit}</small></td>
+            <td><input type="number" min="1" value="${it.quantity}" class="form-control form-control-sm" style="width:80px;" onchange="updateQty(${idx}, this.value)" /></td>
+            <td><input type="number" min="0" value="${it.unitPrice}" class="form-control form-control-sm" style="width:100px;" onchange="updatePrice(${idx}, this.value)" /></td>
+            <td><input type="text" value="${it.notes || ''}" class="form-control form-control-sm" onchange="updateNote(${idx}, this.value)" /></td>
+            <td class="text-end">${total.toLocaleString('vi-VN')} đ</td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${idx})">🗑</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderHiddenInputs() {
+    const c = document.getElementById('hiddenInputs');
+    if (!c) return;
+    c.innerHTML = '';
+    items.forEach((it, i) => {
+        c.innerHTML += `
+            <input type="hidden" name="SaleDetails[${i}].Id" value="${it.id}" />
+            <input type="hidden" name="SaleDetails[${i}].ProductId" value="${it.productId}" />
+            <input type="hidden" name="SaleDetails[${i}].Quantity" value="${it.quantity}" />
+            <input type="hidden" name="SaleDetails[${i}].UnitPrice" value="${it.unitPrice}" />
+            <input type="hidden" name="SaleDetails[${i}].Notes" value="${it.notes || ''}" />`;
+    });
+}
+
+function calculateTotal() {
+    const el = document.getElementById('subTotal');
+    if (!el) return;
+    const t = items.reduce((s, it) => s + (it.unitPrice * it.quantity), 0);
+    el.textContent = t.toLocaleString('vi-VN');
+}
+
+renderTable(); renderHiddenInputs(); fillSelect(); calculateTotal();
+    </script>
 }

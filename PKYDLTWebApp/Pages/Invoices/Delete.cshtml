@@ -17,11 +17,11 @@
 
     <div class="card border-danger">
         <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">⚠️ This action cannot be undone</h5>
+            <h5 class="mb-0">⚠️ Hành động này không thể hoàn tác</h5>
         </div>
         <div class="card-body">
             <div class="alert alert-danger">
-                <h6>Are you sure you want to delete this invoice?</h6>
+                <h6>Bạn có chắc muốn xóa hóa đơn này?</h6>
                 <div class="row">
                     <div class="col-md-4"><strong>Số hóa đơn:</strong> @inv.InvoiceNumber</div>
                     <div class="col-md-4"><strong>Ngày:</strong> @inv.InvoiceDate.ToString("dd/MM/yyyy")</div>
@@ -30,14 +30,26 @@
                 <div class="row mt-2">
                     <div class="col-md-4"><strong>Đơn bán:</strong> @(inv.Sale?.SaleCode ?? "—")</div>
                     <div class="col-md-4"><strong>Tổng tiền:</strong> @inv.TotalAmount.ToString("#,##0") đ</div>
-                    <div class="col-md-4"><strong>Status:</strong> @inv.Status</div>
+                    <div class="col-md-4"><strong>Trạng thái:</strong> @inv.Status</div>
                 </div>
             </div>
-            <p class="text-muted">Deleting this invoice removes only the invoice record. The related sale and its stock are not affected.</p>
+            <p class="text-muted">Khi xóa hóa đơn, <strong>toàn bộ sản phẩm trong hóa đơn sẽ được cộng lại vào kho</strong>.</p>
+            @if (inv.Sale?.SaleDetails != null && inv.Sale.SaleDetails.Any())
+            {
+                <div class="mb-3">
+                    <small class="text-muted">Sản phẩm sẽ được hoàn về kho:</small>
+                    <ul class="mb-0">
+                        @foreach (var d in inv.Sale.SaleDetails)
+                        {
+                            <li>@(d.Product?.ProductName ?? "#" + d.ProductId) — @d.Quantity @(d.Product?.Unit ?? "")</li>
+                        }
+                    </ul>
+                </div>
+            }
             <div class="d-flex gap-2">
                 <a class="btn btn-outline-secondary flex-fill" asp-page="Index">Hủy</a>
                 <form method="post" class="flex-fill">
-                    <button type="submit" class="btn btn-danger w-100">🗑️ Xóa hóa đơn</button>
+                    <button type="submit" class="btn btn-danger w-100">🗑️ Xóa hóa đơn + cộng lại kho</button>
                 </form>
             </div>
         </div>
